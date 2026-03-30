@@ -10,9 +10,9 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=prod
       - SERVER_PORT=8080
-      - SPRING_DATASOURCE_URL=jdbc:sqlserver://host.docker.internal:1433;databaseName=Webcake2;encrypt=false;trustServerCertificate=true
-      - SPRING_DATASOURCE_USERNAME=sa
-      - SPRING_DATASOURCE_PASSWORD=your_password
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/banhngot
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres_password
       - JPA_DDL_AUTO=none
       - JPA_SHOW_SQL=false
       - THYMELEAF_CACHE=true
@@ -26,24 +26,28 @@ services:
     restart: unless-stopped
     networks:
       - app-network
+    depends_on:
+      - postgres
 
-  # SQL Server (for local development only)
-  # sqlserver:
-  #   image: mcr.microsoft.com/mssql/server:2022-latest
-  #   environment:
-  #     - ACCEPT_EULA=Y
-  #     - SA_PASSWORD=YourPassword123
-  #   ports:
-  #     - "1433:1433"
-  #   volumes:
-  #     - sqlserver_data:/var/opt/mssql
-  #   restart: unless-stopped
-  #   networks:
-  #     - app-network
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_DB=banhngot
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-postgresql.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: unless-stopped
+    networks:
+      - app-network
 
 networks:
   app-network:
     driver: bridge
 
-# volumes:
-#   sqlserver_data:
+volumes:
+  postgres_data:

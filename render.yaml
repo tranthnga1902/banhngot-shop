@@ -1,0 +1,51 @@
+# Render Blueprint - Free Tier Deployment
+# https://render.com/docs/blueprint-spec
+
+services:
+  # PostgreSQL Database (Free tier)
+  - type: pserv
+    name: banhngot-db
+    plan: free
+    postgresMajorVersion: "16"
+    databaseName: banhngot
+    ipAllowList: []
+
+  # Spring Boot Application
+  - type: web
+    name: banhngot-shop
+    plan: free
+    region: singapore
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java -jar target/projectend-0.0.1-SNAPSHOT.jar
+    healthCheckPath: /
+    autoDeploy: true
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: JPA_DDL_AUTO
+        value: none
+      - key: JPA_SHOW_SQL
+        value: false
+      - key: THYMELEAF_CACHE
+        value: "true"
+      - key: LOG_LEVEL
+        value: INFO
+      - key: SERVER_PORT
+        value: "10000"
+      # Database connection - will be set from PostgreSQL service
+      - fromService:
+          type: pserv
+          name: banhngot-db
+          envVarKey: DATABASE_URL
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
+      - key: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+        value: org.postgresql.Driver
+      - key: SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT
+        value: org.hibernate.dialect.PostgreSQLDialect
+      - key: SPRING_JPA_DATABASE_PLATFORM
+        value: org.hibernate.dialect.PostgreSQLDialect
