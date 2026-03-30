@@ -363,7 +363,7 @@ Distributed under the MIT License. See [`LICENSE`](LICENSE) for more information
 
 ## 📞 Liên Hệ
 
-**Trần Thị Ngọc Á** - [@tranthnga1902](https://github.com/tranthnga1902)
+**Trần Thúy Nga** - [@tranthnga1902](https://github.com/tranthnga1902)
 
 Project Link: [https://github.com/tranthnga1902/banhngot-shop](https://github.com/tranthnga1902/banhngot-shop)
 
