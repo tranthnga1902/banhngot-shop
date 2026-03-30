@@ -1,211 +1,311 @@
-# Bakery Shop
+# 🍰 Bakery Shop - Website Bán Bánh Ngọt
 
-A full-stack e-commerce web application for selling bakery products, built with Spring Boot, Thymeleaf, and SQL Server.
+<div align="center">
+
+![Java](https://img.shields.io/badge/Java-17+-ED8B00?style=for-the-badge&logo=java&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.0-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)
+![Thymeleaf](https://img.shields.io/badge/Thymeleaf-3.x-005F0F?style=for-the-badge&logo=thymeleaf&logoColor=white)
+![SQL Server](https://img.shields.io/badge/SQL%20Server-2019-CC2927?style=for-the-badge&logo=microsoftsqlserver&logoColor=white)
+![Maven](https://img.shields.io/badge/Maven-3.9-C71A36?style=for-the-badge&logo=apachemaven&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
+
+*A modern e-commerce platform for bakery businesses*
+
+**[Demo Live](https://banhngot-shop.onrender.com)** · **[Report Bug](https://github.com/tranthnga1902/banhngot-shop/issues)** · **[Request Feature](https://github.com/tranthnga1902/banhngot-shop/issues)**
+
+</div>
 
 ---
 
-## Table of Contents
+## 📌 Mục Lục
 
-- [Overview](#overview)
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Requirements](#requirements)
-- [Getting Started](#getting-started)
-- [Project Structure](#project-structure)
+- [Giới Thiệu](#giới-thiệu)
+- [Tính Năng](#tính-năng)
+- [Công Nghệ Sử Dụng](#công-nghệ-sử-dụng)
+- [Yêu Cầu Hệ Thống](#yêu-cầu-hệ-thống)
+- [Bắt Đầu Nhanh](#bắt-đầu-nhanh)
+- [Cấu Trúc Dự Án](#cấu-trúc-dự-án)
 - [API Endpoints](#api-endpoints)
-- [Environment Variables](#environment-variables)
-- [Deployment](#deployment)
+- [Triển Khai](#triển-khai)
+- [Đóng Góp](#đóng-góp)
 - [License](#license)
 
 ---
 
-## Overview
+## 🎯 Giới Thiệu
 
-Bakery Shop is a web-based e-commerce platform that supports browsing products, managing orders, and administering the store. The system includes three access levels: Customer, Staff, and Admin, each with a dedicated interface and functionality.
+**Bakery Shop** là nền tảng thương mại điện tử hoàn chỉnh dành cho cửa hàng bánh ngọt, được xây dựng bằng Spring Boot với giao diện hiện đại và thân thiện người dùng.
 
----
-
-## Features
-
-### Customer
-- Browse and search products
-- Manage shopping cart
-- Place orders at checkout
-- Update user profile
-- Reset password via email
-
-### Staff
-- Process and manage customer orders
-
-### Admin
-- Dashboard with store statistics
-- Full product management
-- Order oversight
-- User account management
-- Blog and news posting
+Hệ thống hỗ trợ **3 cấp quyền truy cập**:
+- 👤 **Khách hàng** - Mua sắm, quản lý giỏ hàng, đặt hàng
+- 👨‍💼 **Nhân viên** - Xử lý đơn hàng, quản lý đơn hàng
+- 🔐 **Quản trị viên** - Toàn quyền quản lý hệ thống
 
 ---
 
-## Tech Stack
+## ✨ Tính Năng
 
-| Layer | Technology |
-|---|---|
-| Backend | Spring Boot 3.2.0, Spring Security, Spring Data JPA |
-| Frontend | Thymeleaf, HTML5, CSS3, JavaScript |
-| Database | SQL Server |
-| Email | Spring Mail (Gmail SMTP) |
-| Build Tool | Maven |
+### 👤 Khách Hàng
+| Tính năng | Mô tả |
+|-----------|-------|
+| 🔍 **Tìm kiếm sản phẩm** | Tìm kiếm và lọc theo danh mục, giá |
+| 🛒 **Giỏ hàng** | Thêm, sửa, xóa sản phẩm trong giỏ |
+| 📦 **Đặt hàng** | Checkout với nhiều phương thức thanh toán |
+| 👤 **Quản lý tài khoản** | Cập nhật thông tin cá nhân |
+| 🔑 **Quên mật khẩu** | Khôi phục qua email |
+
+### 👨‍💼 Nhân Viên
+| Tính năng | Mô tả |
+|-----------|-------|
+| 📋 **Xem đơn hàng** | Danh sách đơn hàng cần xử lý |
+| ✅ **Cập nhật trạng thái** | Xác nhận, giao hàng, hoàn thành |
+| 📊 **Báo cáo** | Thống kê đơn hàng |
+
+### 🔐 Quản Trị Viên
+| Tính năng | Mô tả |
+|-----------|-------|
+| 📈 **Dashboard** | Thống kê doanh thu, đơn hàng |
+| 🍰 **Quản lý sản phẩm** | CRUD sản phẩm, danh mục |
+| 📦 **Quản lý đơn hàng** | Toàn quyền xử lý đơn hàng |
+| 👥 **Quản lý người dùng** | Tạo, sửa, xóa tài khoản |
+| 📝 **Quản lý blog** | Tin tức, khuyến mãi |
 
 ---
 
-## Requirements
+## 🛠️ Công Nghệ Sử Dụng
 
-- Java 17 or higher
-- Maven 3.9 or higher
-- SQL Server 2019 or higher
-- Docker (optional, for containerized deployment)
+### Backend
+<div align="center">
+
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| ![Java](https://img.shields.io/badge/Java-17-ED8B00?style=flat-square) | 17+ | Programming Language |
+| ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.0-6DB33F?style=flat-square) | 3.2.0 | Backend Framework |
+| ![Spring Security](https://img.shields.io/badge/Spring%20Security-6.x-6DB33F?style=flat-square) | 6.x | Authentication & Authorization |
+| ![Spring Data JPA](https://img.shields.io/badge/JPA-3.2-6DB33F?style=flat-square) | 3.2 | ORM Framework |
+| ![Maven](https://img.shields.io/badge/Maven-3.9-C71A36?style=flat-square) | 3.9+ | Build Tool |
+
+</div>
+
+### Frontend
+<div align="center">
+
+| Technology | Purpose |
+|------------|---------|
+| ![Thymeleaf](https://img.shields.io/badge/Thymeleaf-3.x-005F0F?style=flat-square) | Template Engine |
+| ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5) | Markup Language |
+| ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3) | Styling |
+| ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript) | Client Scripting |
+
+</div>
+
+### Database & Infrastructure
+<div align="center">
+
+| Technology | Purpose |
+|------------|---------|
+| ![SQL Server](https://img.shields.io/badge/SQL%20Server-2019-CC2927?style=flat-square&logo=microsoftsqlserver) | Database |
+| ![Gmail SMTP](https://img.shields.io/badge/Gmail-SMTP-EA4335?style=flat-square&logo=gmail) | Email Service |
+| ![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=flat-square&logo=docker) | Containerization |
+
+</div>
 
 ---
 
-## Getting Started
+## 📋 Yêu Cầu Hệ Thống
 
-### 1. Clone the repository
+### Phần mềm cần thiết
+
+| Requirement | Version | Download |
+|------------|---------|----------|
+| JDK | 17+ | [Download](https://adoptium.net/) |
+| Maven | 3.9+ | [Download](https://maven.apache.org/download.cgi) |
+| SQL Server | 2019+ | [Download](https://www.microsoft.com/sql-server/sql-server-downloads) |
+| Docker | 20.10+ | [Download](https://docker.com/get-started) |
+
+---
+
+## 🚀 Bắt Đầu Nhanh
+
+### 1. Clone dự án
 
 ```bash
-git clone https://github.com/your-username/bakery-shop.git
-cd bakery-shop
+git clone https://github.com/tranthnga1902/banhngot-shop.git
+cd banhngot-shop
 ```
 
-### 2. Set up the database
+### 2. Cài đặt Database
 
-Create a database named `Webcake2` in SQL Server, then import the provided SQL file:
+```sql
+-- Tạo database trong SQL Server
+CREATE DATABASE Webcake2;
+GO
+
+-- Import file SQL
+sqlcmd -S localhost -U sa -P YOUR_PASSWORD -i asmfpt5\ 22.23.14.sql
+```
+
+### 3. Cấu hình Environment
 
 ```bash
-sqlcmd -S localhost -U sa -P your_password -i path/to/database.sql
+# Copy file mẫu
+copy .env.example .env
+
+# Hoặc chỉnh sửa trực tiếp
+# File: src/main/resources/application.properties
 ```
-
-### 3. Configure environment variables
-
-Copy the example environment file and fill in your values:
-
-```bash
-cp .env.example .env
-```
-
-Or edit `src/main/resources/application.properties` directly:
 
 ```properties
+# application.properties
 spring.datasource.url=jdbc:sqlserver://localhost:1433;databaseName=Webcake2;encrypt=false;trustServerCertificate=true
 spring.datasource.username=sa
-spring.datasource.password=your_password
+spring.datasource.password=YOUR_PASSWORD
+
+# Email Configuration
+spring.mail.username=your_email@gmail.com
+spring.mail.password=your_app_password
 ```
 
-### 4. Run the application
+### 4. Chạy ứng dụng
 
 ```bash
+# Sử dụng Maven
 mvn spring-boot:run
+
+# Hoặc chạy file JAR
+java -jar target/projectend-0.0.1-SNAPSHOT.jar
 ```
 
-The application will be available at `http://localhost:8080`.
+🌐 **Truy cập:** [http://localhost:8080](http://localhost:8080)
 
-### Default Accounts
+---
+
+## 👥 Tài Khoản Mặc Định
+
+> ⚠️ **Lưu ý:** Đổi mật khẩu ngay sau khi deploy lên production!
 
 | Role | Username | Password |
-|---|---|---|
-| Admin | admin | admin123 |
-| Staff | staff | staff123 |
-| Customer | user | user123 |
-
-> These are development credentials. Change all passwords before deploying to production.
+|------|----------|----------|
+| 🔐 Admin | `admin` | `admin123` |
+| 👨‍💼 Staff | `staff` | `staff123` |
+| 👤 Customer | `user` | `user123` |
 
 ---
 
-## Project Structure
+## 📁 Cấu Trúc Dự Án
 
 ```
-src/main/java/com/example/projectend/
-    controller/
-        admin/          # Admin controllers
-        staff/          # Staff controllers
-    entity/             # JPA entities
-    repository/         # Data access layer
-    service/
-        auth/           # Authentication services
-    config/             # Application configuration
-
-src/main/resources/
-    templates/
-        admin/          # Admin views
-        staff/          # Staff views
-        layouts/        # Shared layout templates
-    static/             # CSS, JavaScript, images
+banhngot-shop/
+├── src/main/java/com/example/projectend/
+│   ├── BakeryShopApplication.java     # Main class
+│   ├── controller/
+│   │   ├── admin/                     # Admin controllers
+│   │   │   ├── DashboardController.java
+│   │   │   ├── ProductController.java
+│   │   │   ├── OrderController.java
+│   │   │   └── UserController.java
+│   │   ├── staff/                     # Staff controllers
+│   │   │   └── StaffOrderController.java
+│   │   ├── HomeController.java        # Public controllers
+│   │   └── CartController.java
+│   ├── entity/                        # JPA Entities
+│   │   ├── TaiKhoan.java
+│   │   ├── SanPham.java
+│   │   ├── DonHang.java
+│   │   └── ChiTietDonHang.java
+│   ├── repository/                    # Data Access Layer
+│   ├── service/                       # Business Logic
+│   │   ├── auth/
+│   │   └── impl/
+│   └── config/                        # Configuration
+│       ├── SecurityConfig.java
+│       └── WebConfig.java
+│
+├── src/main/resources/
+│   ├── templates/                     # Thymeleaf Views
+│   │   ├── layouts/
+│   │   ├── admin/
+│   │   ├── staff/
+│   │   └── home/
+│   ├── static/                        # CSS, JS, Images
+│   └── application.properties         # App config
+│
+├── src/test/java/                     # Unit Tests
+├── asmfpt5 22.23.14.sql               # Database script
+├── Dockerfile                         # Docker config
+├── docker-compose.yml                 # Docker Compose
+├── pom.xml                            # Maven config
+├── .env.example                       # Env template
+└── README.md                          # This file
 ```
 
 ---
 
-## API Endpoints
+## 🔌 API Endpoints
 
-### Public
+### Public Routes (Không cần đăng nhập)
 
-| Method | Path | Description |
-|---|---|---|
-| GET | `/` | Home page |
-| GET | `/san-pham` | Product listing |
-| GET | `/san-pham/{id}` | Product detail |
-| GET | `/login` | Login page |
-| GET | `/register` | Registration page |
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/` | Trang chủ |
+| `GET` | `/san-pham` | Danh sách sản phẩm |
+| `GET` | `/san-pham/{id}` | Chi tiết sản phẩm |
+| `GET` | `/login` | Trang đăng nhập |
+| `GET` | `/register` | Trang đăng ký |
+| `GET` | `/quen-mat-khau` | Quên mật khẩu |
 
-### Customer (authentication required)
+### Customer Routes (Cần đăng nhập)
 
-| Method | Path | Description |
-|---|---|---|
-| GET | `/gio-hang` | View cart |
-| POST | `/gio-hang/them` | Add item to cart |
-| POST | `/checkout` | Place order |
-| GET | `/profile` | User profile |
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/gio-hang` | Xem giỏ hàng |
+| `POST` | `/gio-hang/them` | Thêm vào giỏ hàng |
+| `POST` | `/gio-hang/xoa` | Xóa khỏi giỏ hàng |
+| `POST` | `/checkout` | Đặt hàng |
+| `GET` | `/profile` | Hồ sơ cá nhân |
+| `POST` | `/profile/cap-nhat` | Cập nhật hồ sơ |
 
-### Admin (`/admin/*`)
+### Admin Routes (`/admin/*`)
 
-| Method | Path | Description |
-|---|---|---|
-| GET | `/admin/dashboard` | Admin dashboard |
-| GET | `/admin/san-pham` | Manage products |
-| GET | `/admin/orders` | Manage orders |
-| GET | `/admin/taikhoan` | Manage users |
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/admin/dashboard` | Dashboard |
+| `GET` | `/admin/san-pham` | Quản lý sản phẩm |
+| `POST` | `/admin/san-pham/them` | Thêm sản phẩm |
+| `POST` | `/admin/san-pham/sua` | Sửa sản phẩm |
+| `POST` | `/admin/san-pham/xoa` | Xóa sản phẩm |
+| `GET` | `/admin/don-hang` | Quản lý đơn hàng |
+| `POST` | `/admin/don-hang/cap-nhat` | Cập nhật đơn hàng |
+| `GET` | `/admin/nguoi-dung` | Quản lý người dùng |
 
-### Staff (`/staff/*`)
+### Staff Routes (`/staff/*`)
 
-| Method | Path | Description |
-|---|---|---|
-| GET | `/staff/dashboard` | Staff dashboard |
-| GET | `/staff/orders` | View and process orders |
-
----
-
-## Environment Variables
-
-| Variable | Description | Default |
-|---|---|---|
-| `SERVER_PORT` | Port the server listens on | `8080` |
-| `SPRING_DATASOURCE_URL` | JDBC connection string | — |
-| `SPRING_DATASOURCE_USERNAME` | Database username | `sa` |
-| `SPRING_DATASOURCE_PASSWORD` | Database password | — |
-| `MAIL_USERNAME` | Gmail address for SMTP | — |
-| `MAIL_PASSWORD` | Gmail app password | — |
-| `SPRING_PROFILES_ACTIVE` | Active Spring profile | `prod` |
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/staff/dashboard` | Dashboard nhân viên |
+| `GET` | `/staff/don-hang` | Danh sách đơn hàng |
+| `POST` | `/staff/don-hang/xu-ly` | Xử lý đơn hàng |
 
 ---
 
-## Deployment
+## 🚢 Triển Khai
 
-### Docker
+### Docker (Khuyến nghị)
 
 ```bash
-# Build the image
-docker build -t bakery-shop .
+# Build image
+docker build -t banhngot-shop .
 
-# Run the container
-docker run -p 8080:8080 --env-file .env bakery-shop
+# Chạy container
+docker run -d -p 8080:8080 \
+  --name banhngot \
+  -e SPRING_PROFILES_ACTIVE=prod \
+  -e SPRING_DATASOURCE_URL="jdbc:sqlserver://YOUR_DB:1433;databaseName=Webcake2" \
+  -e SPRING_DATASOURCE_USERNAME=sa \
+  -e SPRING_DATASOURCE_PASSWORD=YOUR_PASSWORD \
+  -e SPRING_MAIL_USERNAME=your_email@gmail.com \
+  -e SPRING_MAIL_PASSWORD=your_app_password \
+  banhngot-shop
 ```
 
 ### Docker Compose
@@ -214,22 +314,65 @@ docker run -p 8080:8080 --env-file .env bakery-shop
 docker-compose up -d
 ```
 
-### Render.com
+### Render.com (Free Tier)
 
-1. Push the repository to GitHub.
-2. Create a new Web Service on Render and connect the repository.
-3. Add all required environment variables from `.env.example`.
-4. Deploy — Render will build and start the service automatically.
+1. Push code lên GitHub
+2. Vào [render.com](https://render.com) → **New → Web Service**
+3. Kết nối GitHub repo
+4. Thêm Environment Variables:
+   ```
+   SPRING_PROFILES_ACTIVE=prod
+   SPRING_DATASOURCE_URL=jdbc:sqlserver://YOUR_DB:1433;databaseName=Webcake2
+   SPRING_DATASOURCE_USERNAME=sa
+   SPRING_DATASOURCE_PASSWORD=YOUR_PASSWORD
+   SPRING_MAIL_USERNAME=your_email@gmail.com
+   SPRING_MAIL_PASSWORD=your_app_password
+   ```
+5. Click **Deploy**
 
 ### Railway.app
 
-1. Push the repository to GitHub.
-2. Create a new project on Railway and deploy from GitHub.
-3. Add a SQL Server or PostgreSQL database plugin.
-4. Configure environment variables in the Railway dashboard.
+1. Push code lên GitHub
+2. Vào [railway.app](https://railway.app) → **New Project**
+3. Deploy từ GitHub
+4. Thêm PostgreSQL database
+5. Configure environment variables
+6. Deploy!
 
 ---
 
-## License
+## 🤝 Đóng Góp
 
-This project is developed for educational purposes.
+Đóng góp luôn được chào đón! Vui lòng:
+
+1. **Fork** dự án này
+2. Tạo **Feature Branch** (`git checkout -b feature/AmazingFeature`)
+3. **Commit** thay đổi (`git commit -m 'Add AmazingFeature'`)
+4. **Push** lên Branch (`git push origin feature/AmazingFeature`)
+5. Tạo **Pull Request**
+
+---
+
+## 📝 License
+
+Dự án này được phát triển cho **mục đích học tập**.
+
+Distributed under the MIT License. See [`LICENSE`](LICENSE) for more information.
+
+---
+
+## 📞 Liên Hệ
+
+**Trần Thị Ngọc Á** - [@tranthnga1902](https://github.com/tranthnga1902)
+
+Project Link: [https://github.com/tranthnga1902/banhngot-shop](https://github.com/tranthnga1902/banhngot-shop)
+
+---
+
+<div align="center">
+
+⭐ Star this project if you find it helpful!
+
+*Made with ❤️ by tranthnga1902*
+
+</div>
