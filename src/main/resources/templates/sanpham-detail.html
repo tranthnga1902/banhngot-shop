@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layouts/base}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}">Chi tiết sản phẩm - Tiệm bánh</title>
+    <link rel="stylesheet" th:href="@{/css/sanpham-detail.css?v=200}">
+</head>
+<body>
+<div layout:fragment="content">
+<div class="product-detail-container">
+    <div class="container">
+
+        <!-- Breadcrumb -->
+
+        <!-- Layout 2 cột -->
+        <div class="product-layout">
+
+            <!-- CỘT TRÁI: Gallery -->
+            <div class="product-gallery">
+                <div class="main-image-wrap">
+                    <img class="main-image" id="mainImage"
+                         th:src="@{${sanPham != null && sanPham.hinhAnh != null ? '/images/' + sanPham.hinhAnh : '/img/default-product.jpg'}}"
+                         th:alt="${sanPham != null ? sanPham.tenSP : 'Sản phẩm'}"
+                         onerror="this.src='https://via.placeholder.com/500?text=San+pham'">
+                </div>
+            </div>
+
+            <!-- CỘT PHẢI: Thông tin -->
+            <div class="product-info">
+
+                <!-- Tag danh mục -->
+                <span class="product-category-tag"
+                      th:if="${sanPham != null and sanPham.loaiSanPham != null}"
+                      th:text="${sanPham.loaiSanPham.tenLoai}">Bánh kem</span>
+
+                <!-- Tên -->
+                <h1 class="product-name"
+                    th:text="${sanPham != null ? sanPham.tenSP : 'Tên sản phẩm'}">
+                    Strawberry Soft Cake
+                </h1>
+
+                <!-- SKU -->
+                <div class="product-sku"
+                     th:if="${sanPham != null}"
+                     th:text="'Mã: ' + ${sanPham.maSP}">Mã: KT107</div>
+
+                <hr class="magnolia-divider">
+
+                <!-- Giá -->
+                <div class="product-price-wrap">
+                    <div class="product-price"
+                         th:text="${sanPham != null ? #numbers.formatDecimal(sanPham.gia, 0, 'COMMA', 0, 'POINT') + ' đ' : '0 đ'}">
+                        360.000 đ
+                    </div>
+                    <div class="product-price-note">Đã bao gồm thuế · Miễn phí ship từ 500.000đ</div>
+                </div>
+
+                <!-- Tồn kho -->
+                <div th:if="${sanPham != null}">
+                    <span class="stock-badge"
+                          th:classappend="${sanPham.soLuong > 10 ? 'available' : (sanPham.soLuong > 0 ? 'low' : 'out')}">
+                        <i class="fas"
+                           th:classappend="${sanPham.soLuong > 0 ? 'fa-check-circle' : 'fa-times-circle'}"></i>
+                        <span th:text="${sanPham.soLuong > 10 ? 'Còn hàng' : (sanPham.soLuong > 0 ? 'Sắp hết (' + sanPham.soLuong + ')' : 'Hết hàng')}">Còn hàng</span>
+                    </span>
+                </div>
+
+                <!-- Mô tả ngắn -->
+                <p class="product-short-desc"
+                   th:if="${sanPham != null and sanPham.moTa != null}"
+                   th:utext="${#strings.abbreviate(sanPham.moTa, 250)}">
+                    Mô tả sản phẩm...
+                </p>
+
+                <!-- Số lượng -->
+                <div class="quantity-label">Số lượng</div>
+                <div class="quantity-input">
+                    <button class="quantity-btn" type="button" onclick="decreaseQuantity()">−</button>
+                    <input class="quantity-value" id="quantity" type="number"
+                           value="1" min="1"
+                           th:max="${sanPham != null ? sanPham.soLuong : 999}">
+                    <button class="quantity-btn" type="button" onclick="increaseQuantity()">+</button>
+                </div>
+
+                <!-- Nút hành động -->
+                <div class="action-buttons">
+                    <!-- FIX: gọi addToCartDetail thay vì addToCart để đọc đúng số lượng -->
+                    <button class="btn-add-cart"
+                            type="button"
+                            onclick="addToCartDetail(this); event.stopPropagation();"
+                            th:data-product-id="${sanPham.maSP}"
+                            th:data-product-name="${sanPham.tenSP}"
+                            th:data-product-price="${sanPham.gia}"
+                            th:data-product-image="${sanPham.hinhAnh}"
+                            th:if="${sanPham != null and sanPham.soLuong > 0}">
+                        <i class="fas fa-cart-plus me-2"></i>THÊM VÀO GIỎ HÀNG
+                    </button>
+                    <button class="btn-buy-now"
+                            type="button"
+                            onclick="buyNow()"
+                            th:if="${sanPham != null and sanPham.soLuong > 0}">
+                        MUA NGAY
+                    </button>
+                    <button class="btn-add-cart" disabled
+                            th:if="${sanPham == null or sanPham.soLuong == 0}">
+                        <i class="fas fa-times-circle me-2"></i>Hết hàng
+                    </button>
+                </div>
+
+                <!-- Meta -->
+                <div class="product-meta">
+                    <div class="meta-item" th:if="${sanPham != null and sanPham.loaiSanPham != null}">
+                        <i class="fas fa-tag"></i>
+                        <span>Danh mục: </span>
+                        <a th:href="@{/sanpham(loai=${sanPham.loaiSanPham.maLoai})}"
+                           th:text="${sanPham.loaiSanPham.tenLoai}">Bánh kem</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- TABS MÔ TẢ -->
+        <div class="tabs-section" th:if="${sanPham != null and sanPham.moTa != null}">
+            <ul class="nav nav-tabs" id="productTab">
+                <li class="nav-item">
+                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-desc">
+                        Mô tả sản phẩm
+                    </button>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade show active description-content" id="tab-desc"
+                     th:utext="${sanPham.moTa}">Mô tả...</div>
+                <div class="tab-pane fade description-content" id="tab-ship">
+                    <p><strong>Giao hàng toàn quốc</strong> trong 24–48h.</p>
+                    <p>Miễn phí vận chuyển cho đơn hàng từ <strong>500.000đ</strong>.</p>
+                    <p>Đổi trả trong <strong>7 ngày</strong> nếu sản phẩm lỗi.</p>
+                    <p>Hoàn tiền <strong>100%</strong> nếu không hài lòng.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SẢN PHẨM LIÊN QUAN -->
+        <div class="related-products">
+            <h2 class="related-title">Có thể bạn thích</h2>
+            <p class="related-subtitle">Sản phẩm cùng loại</p>
+
+            <div class="related-grid">
+                <!-- Real data -->
+                <a class="product-card text-decoration-none"
+                   th:each="sp : ${relatedProducts}"
+                   th:if="${relatedProducts != null and !relatedProducts.isEmpty()}"
+                   th:href="@{/sanpham/{id}(id=${sp.maSP})}">
+                    <img class="product-card-img"
+                         th:src="@{'/images/' + ${sp.hinhAnh}}"
+                         th:alt="${sp.tenSP}"
+                         onerror="this.src='https://via.placeholder.com/250'">
+                    <div class="product-card-body">
+                        <div class="product-card-sku" th:text="${sp.maSP}">KT107</div>
+                        <h5 class="product-card-title" th:text="${sp.tenSP}">Tên sản phẩm</h5>
+                        <div class="product-card-footer">
+                            <span class="product-card-price"
+                                  th:text="${#numbers.formatDecimal(sp.gia, 0, 'COMMA', 0, 'POINT')} + ' đ'">
+                                360.000 đ
+                            </span>
+                            <button class="product-card-cart-btn" type="button">
+                                <i class="fas fa-shopping-cart"></i>
+                            </button>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Placeholder -->
+                <div class="product-card"
+                     th:each="i : ${#numbers.sequence(1, 4)}"
+                     th:if="${relatedProducts == null or relatedProducts.isEmpty()}">
+                    <img class="product-card-img" src="https://via.placeholder.com/300?text=Banh">
+                    <div class="product-card-body">
+                        <div class="product-card-sku">--</div>
+                        <h5 class="product-card-title">Sản phẩm mẫu</h5>
+                        <div class="product-card-footer">
+                            <span class="product-card-price">360.000 đ</span>
+                            <button class="product-card-cart-btn" type="button">
+                                <i class="fas fa-shopping-cart"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Scripts -->
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+
+<!-- SCRIPT DUY NHẤT - đã gộp và sửa tất cả lỗi -->
+<script>
+
+    // Load cart count on page load
+    document.addEventListener('DOMContentLoaded', function () {
+        updateCartCount();
+    });
+
+    // -------------------------------------------------------
+    // FIX: addToCartDetail - gọi API 1 lần với đúng số lượng
+    // Không loop addToCart nhiều lần nữa
+    // -------------------------------------------------------
+    function addToCartDetail(button) {
+        const quantity = parseInt(document.getElementById('quantity').value);
+        const productId = button.getAttribute('data-product-id');
+        const productName = button.getAttribute('data-product-name');
+
+        if (!productId) {
+            showNotification('Không tìm thấy thông tin sản phẩm!', 'error');
+            return;
+        }
+
+        if (button.classList.contains('adding') || button.classList.contains('added')) {
+            return;
+        }
+
+        button.classList.add('adding');
+        button.disabled = true;
+
+        fetch('/api/giohang/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `sanPhamId=${productId}&soLuong=${quantity}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                button.classList.remove('adding');
+                button.classList.add('added');
+
+                updateCartCount();
+
+                const badge = document.getElementById('cartCountBadge');
+                if (badge) {
+                    badge.classList.add('pulse');
+                    setTimeout(() => badge.classList.remove('pulse'), 500);
+                }
+
+                showNotification(`Đã thêm ${quantity} "${productName}" vào giỏ hàng!`, 'success');
+
+                setTimeout(() => {
+                    button.classList.remove('added');
+                    button.disabled = false;
+                }, 2000);
+            } else {
+                button.classList.remove('adding');
+                button.disabled = false;
+
+                if (data.message) {
+                    if (data.message.includes('đăng nhập')) {
+                        showNotification('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng!', 'warning');
+                        setTimeout(() => {
+                            window.location.href = '/login?redirect=/sanpham';
+                        }, 1500);
+                    } else {
+                        showNotification('' + data.message, 'warning');
+                    }
+                } else {
+                    showNotification(' Có lỗi xảy ra, vui lòng thử lại!', 'error');
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            button.classList.remove('adding');
+            button.disabled = false;
+            showNotification('❌ Có lỗi xảy ra, vui lòng thử lại!', 'error');
+        });
+    }
+
+    // -------------------------------------------------------
+    // FIX: buyNow - thêm vào giỏ rồi mới chuyển trang
+    // -------------------------------------------------------
+    function buyNow() {
+        const btn = document.querySelector('.btn-add-cart');
+        if (!btn) return;
+
+        const productId = btn.getAttribute('data-product-id');
+        const quantity = parseInt(document.getElementById('quantity').value);
+
+        fetch('/api/giohang/add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `sanPhamId=${productId}&soLuong=${quantity}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = '/checkout';
+            } else if (data.message && data.message.includes('đăng nhập')) {
+                showNotification('Vui lòng đăng nhập trước!', 'warning');
+                setTimeout(() => { window.location.href = '/login?redirect=/checkout'; }, 1500);
+            } else {
+                showNotification('' + (data.message || 'Có lỗi xảy ra!'), 'warning');
+            }
+        })
+        .catch(() => showNotification('Có lỗi xảy ra!', 'error'));
+    }
+
+    // Điều chỉnh số lượng
+    function decreaseQuantity() {
+        const input = document.getElementById('quantity');
+        if (parseInt(input.value) > 1) input.value = parseInt(input.value) - 1;
+    }
+
+    function increaseQuantity() {
+        const input = document.getElementById('quantity');
+        const max = parseInt(input.max);
+        if (parseInt(input.value) < max) input.value = parseInt(input.value) + 1;
+    }
+
+    // Đổi ảnh chính (thumbnail gallery)
+    function changeMainImage(thumbnail) {
+        document.getElementById('mainImage').src = thumbnail.src;
+        document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+        thumbnail.classList.add('active');
+    }
+
+    // Size selector
+    document.querySelectorAll('.size-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+
+    // Notification
+    function showNotification(message, type) {
+        const existing = document.querySelector('.cart-notification');
+        if (existing) existing.remove();
+
+        const notification = document.createElement('div');
+        notification.className = `cart-notification ${type}`;
+        notification.innerHTML = `
+            <div class="notification-content">
+                <span class="notification-message">${message}</span>
+                <button class="notification-close" onclick="this.parentElement.parentElement.remove()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `;
+
+        document.body.appendChild(notification);
+        setTimeout(() => notification.classList.add('show'), 100);
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => notification.remove(), 400);
+        }, 3000);
+    }
+
+</script>
+</div>
+</body>
+</html>

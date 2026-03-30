@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:block th:replace="~{fragments/layout :: head('Liên Hệ')}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/lienhe.css}">
+</head>
+
+<body>
+<!-- Header -->
+<th:block th:replace="~{fragments/layout :: header}"></th:block>
+
+<!-- Breadcrumb -->
+<th:block th:replace="~{fragments/layout :: breadcrumb(items=${breadcrumbItems})}"></th:block>
+
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <div class="header-content">
+            <div class="header-icon">📞</div>
+            <h1>Liên Hệ Với Chúng Tôi</h1>
+            <p>Đội ngũ chuyên viên của chúng tôi luôn sẵn sàng hỗ trợ bạn 24/7</p>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Cards Section -->
+<section class="contact-cards-section">
+    <div class="container">
+        <div class="contact-cards">
+            <div class="contact-card">
+                <div class="card-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <h3>Địa Chỉ Cửa Hàng</h3>
+                <p>123 Quang Trung, Gò Vấp<br>TP. Hồ Chí Minh, Việt Nam</p>
+            </div>
+
+            <div class="contact-card">
+                <div class="card-icon">
+                    <i class="fas fa-phone-alt"></i>
+                </div>
+                <h3>Hotline</h3>
+                <p><a href="tel:0909123456">0909.123.456</a></p>
+                <p class="sub-text">Miễn phí tư vấn</p>
+            </div>
+
+            <div class="contact-card">
+                <div class="card-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <h3>Email</h3>
+                <p><a href="mailto:info@tetmarket.com">info@tetmarket.com</a></p>
+                <p class="sub-text">Phản hồi trong 24h</p>
+            </div>
+
+            <div class="contact-card">
+                <div class="card-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h3>Giờ Làm Việc</h3>
+                <p>Thứ 2 - Chủ Nhật<br>8:00 - 22:00</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main Contact Section -->
+<section class="contact-main-section">
+    <div class="container">
+        <div class="contact-layout">
+            <!-- Contact Form -->
+            <div class="form-wrapper">
+                <div class="form-header">
+                    <h2>Gửi Tin Nhắn Cho Chúng Tôi</h2>
+                    <p>Điền thông tin bên dưới và chúng tôi sẽ liên hệ lại với bạn sớm nhất</p>
+                </div>
+
+                <form action="/lienhe/gui" class="contact-form" method="post" th:object="${contactForm}">
+                    <!-- Success Message -->
+                    <div class="alert alert-success" th:if="${successMessage != null}">
+                        <i class="fas fa-check-circle"></i>
+                        <span th:text="${successMessage}"></span>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="hoTen">
+                                <i class="fas fa-user"></i>
+                                Họ và Tên *
+                            </label>
+                            <input id="hoTen" name="hoTen" placeholder="Nguyễn Văn A" required
+                                   th:field="*{hoTen}" type="text">
+                            <span class="error-message" th:errors="*{hoTen}"
+                                  th:if="${#fields.hasErrors('hoTen')}"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="soDienThoai">
+                                <i class="fas fa-phone"></i>
+                                Số Điện Thoại *
+                            </label>
+                            <input id="soDienThoai" name="soDienThoai" placeholder="0909 123 456" required
+                                   th:field="*{soDienThoai}" type="tel">
+                            <span class="error-message" th:errors="*{soDienThoai}"
+                                  th:if="${#fields.hasErrors('soDienThoai')}"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">
+                            <i class="fas fa-envelope"></i>
+                            Email *
+                        </label>
+                        <input id="email" name="email" placeholder="example@email.com" required
+                               th:field="*{email}" type="email">
+                        <span class="error-message" th:errors="*{email}"
+                              th:if="${#fields.hasErrors('email')}"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tieuDe">
+                            <i class="fas fa-tag"></i>
+                            Tiêu Đề *
+                        </label>
+                        <input id="tieuDe" name="tieuDe" placeholder="Tiêu đề liên hệ của bạn" required
+                               th:field="*{tieuDe}" type="text">
+                        <span class="error-message" th:errors="*{tieuDe}"
+                              th:if="${#fields.hasErrors('tieuDe')}"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="noiDung">
+                            <i class="fas fa-comment-dots"></i>
+                            Nội Dung *
+                        </label>
+                        <textarea id="noiDung" name="noiDung" placeholder="Vui lòng mô tả chi tiết yêu cầu của bạn..." required
+                                  rows="6" th:field="*{noiDung}"></textarea>
+                        <span class="error-message" th:errors="*{noiDung}"
+                              th:if="${#fields.hasErrors('noiDung')}"></span>
+                    </div>
+
+                    <button class="submit-btn" type="submit">
+                        <i class="fas fa-paper-plane"></i>
+                        <span>Gửi Tin Nhắn</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Info Sidebar -->
+            <div class="info-sidebar">
+                <!-- Why Choose Us -->
+                <div class="info-box">
+                    <h3>
+                        <i class="fas fa-star"></i>
+                        Vì Sao Chọn Chúng Tôi?
+                    </h3>
+                    <ul class="feature-list">
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            <span>Sản phẩm chất lượng cao</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            <span>Giao hàng nhanh chóng</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            <span>Hỗ trợ 24/7</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            <span>Giá cả cạnh tranh</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Social Links -->
+                <div class="info-box social-box">
+                    <h3>
+                        <i class="fas fa-share-alt"></i>
+                        Kết Nối Với Chúng Tôi
+                    </h3>
+                    <div class="social-links">
+                        <a aria-label="Facebook" class="social-link facebook" href="#">
+                            <i class="fab fa-facebook-f"></i>
+                            <span>Facebook</span>
+                        </a>
+                        <a aria-label="Instagram" class="social-link instagram" href="#">
+                            <i class="fab fa-instagram"></i>
+                            <span>Instagram</span>
+                        </a>
+                        <a aria-label="YouTube" class="social-link youtube" href="#">
+                            <i class="fab fa-youtube"></i>
+                            <span>YouTube</span>
+                        </a>
+                        <a aria-label="Zalo" class="social-link zalo" href="#">
+                            <i class="fas fa-comment"></i>
+                            <span>Zalo</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Contact -->
+                <div class="info-box quick-contact">
+                    <h3>
+                        <i class="fas fa-headset"></i>
+                        Liên Hệ Nhanh
+                    </h3>
+                    <p>Cần tư vấn ngay?</p>
+                    <a class="quick-call-btn" href="tel:0909123456">
+                        <i class="fas fa-phone-alt"></i>
+                        Gọi Ngay: 0909.123.456
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Map Section -->
+<section class="map-section">
+    <div class="container">
+        <div class="map-header">
+            <h2>
+                <i class="fas fa-map-marked-alt"></i>
+                Vị Trí Cửa Hàng
+            </h2>
+            <p>Ghé thăm showroom của chúng tôi để trải nghiệm sản phẩm trực tiếp</p>
+        </div>
+        <div class="map-container">
+            <iframe
+                    allowfullscreen=""
+                    height="450" loading="lazy" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.4609289721735!2d106.66829841531493!3d10.776889992319736!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752ed2392c44df%3A0xd2ecb62e0d050fe9!2sFPT%20University%20HCMC!5e0!3m2!1sen!2s!4v1609459200000!5m2!1sen!2s" style="border:0;" width="100%"></iframe>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="faq-section">
+    <div class="container">
+        <div class="faq-header">
+            <h2>
+                <i class="fas fa-question-circle"></i>
+                Câu Hỏi Thường Gặp
+            </h2>
+            <p>Tìm câu trả lời nhanh cho các thắc mắc phổ biến</p>
+        </div>
+
+        <div class="faq-grid">
+            <div class="faq-item">
+                <div class="faq-question">
+                    <i class="fas fa-shipping-fast"></i>
+                    <h3>Có giao hàng tận nơi không?</h3>
+                </div>
+                <p class="faq-answer">Có, chúng tôi giao hàng tận nơi toàn quốc. Nội thành TP.HCM miễn phí với đơn hàng
+                    từ 500k.</p>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <i class="fas fa-clock"></i>
+                    <h3>Thời gian giao hàng?</h3>
+                </div>
+                <p class="faq-answer">Nội thành: 1-2 ngày. Ngoại thành và tỉnh: 2-5 ngày tùy địa điểm.</p>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <i class="fas fa-undo-alt"></i>
+                    <h3>Chính sách đổi trả?</h3>
+                </div>
+                <p class="faq-answer">Đổi trả trong 7 ngày nếu sản phẩm lỗi hoặc không đúng mô tả.</p>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <i class="fas fa-credit-card"></i>
+                    <h3>Hình thức thanh toán?</h3>
+                </div>
+                <p class="faq-answer">Chuyển khoản, COD, thẻ tín dụng, ví điện tử (Momo, ZaloPay).</p>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <i class="fas fa-box-open"></i>
+                    <h3>Đặt hàng số lượng lớn?</h3>
+                </div>
+                <p class="faq-answer">Có ưu đãi đặc biệt cho đơn hàng doanh nghiệp. Liên hệ: 0909.123.456</p>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <i class="fas fa-gift"></i>
+                    <h3>Có dịch vụ gói quà không?</h3>
+                </div>
+                <p class="faq-answer">Miễn phí gói quà sang trọng cho mọi đơn hàng.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<th:block th:replace="~{fragments/layout :: footer}"></th:block>
+
+<!-- Scripts -->
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+
+
+</html>

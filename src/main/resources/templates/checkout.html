@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragments/layout :: head('Thanh toán đơn hàng')}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/checkout.css}">
+    <style>
+        /* ── ADDRESS MODAL ──────────────────────────────── */
+        .address-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(74, 46, 26, 0.45);
+            animation: fadeIn 0.25s;
+        }
+
+        .address-modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .address-modal-content {
+            background: #FDF6E3;
+            border-radius: 14px;
+            width: 90%;
+            max-width: 560px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(74, 46, 26, 0.2);
+            animation: slideUp 0.25s;
+        }
+
+        .address-modal-header {
+            padding: 18px 24px;
+            border-bottom: 1px solid rgba(201,151,76,0.25);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #4A2E1A;
+            border-radius: 14px 14px 0 0;
+        }
+
+        .address-modal-header h3 {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            color: #FDF6E3;
+            letter-spacing: 0.04em;
+        }
+
+        .address-modal-close {
+            background: rgba(253,246,227,0.12);
+            border: none;
+            color: #FDF6E3;
+            font-size: 20px;
+            cursor: pointer;
+            width: 30px; height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .address-modal-close:hover {
+            background: rgba(253,246,227,0.25);
+        }
+
+        .address-modal-body {
+            padding: 20px 24px;
+        }
+
+        .address-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .address-item {
+            border: 1.5px solid rgba(201,151,76,0.3);
+            border-radius: 8px;
+            padding: 14px 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #FFFFFF;
+        }
+
+        .address-item:hover {
+            border-color: #A0522D;
+            box-shadow: 0 4px 12px rgba(160,82,45,0.12);
+        }
+
+        .address-item.selected {
+            border-color: #A0522D;
+            background: rgba(160,82,45,0.04);
+        }
+
+        .address-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .address-item-name {
+            font-family: Arial, sans-serif;
+            font-weight: 700;
+            font-size: 13.5px;
+            color: #4A2E1A;
+        }
+
+        .address-default-badge {
+            background: rgba(201,151,76,0.18);
+            color: #7a5000;
+            padding: 3px 10px;
+            border-radius: 50px;
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .address-item-detail {
+            font-family: sans-serif;
+            color: #6B3E26;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 6px;
+        }
+
+        .address-item-phone {
+            font-family: sans-serif;
+            color: #8C6A52;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .address-item-phone i { color: #A0522D; }
+
+        .no-address-message {
+            text-align: center;
+            padding: 32px 20px;
+            color: #8C6A52;
+            font-family: sans-serif;
+            font-size: 13.5px;
+        }
+
+        .no-address-message i {
+            font-size: 2.5rem;
+            color: rgba(201,151,76,0.3);
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        .btn-add-address {
+            width: 100%;
+            padding: 11px;
+            background: #A0522D;
+            color: #FDF6E3;
+            border: none;
+            border-radius: 8px;
+            font-family: Arial, sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 16px;
+            display: block;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .btn-add-address:hover {
+            background: #7B3F1F;
+        }
+
+        .address-input-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .address-input-group input { flex: 1; }
+
+        .form-hint {
+            display: block;
+            margin-top: 6px;
+            color: #8C6A52;
+            font-family: sans-serif;
+            font-size: 12px;
+        }
+
+        .form-hint a {
+            color: #A0522D;
+            text-decoration: underline;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+<!-- Header -->
+<th:block th:replace="~{fragments/layout :: header}"></th:block>
+
+<!-- ── CART HEADER ─────────────────────────────────── -->
+<div class="cart-header-section">
+    <div class="container">
+        <h1 class="cart-title">
+        </h1>
+        <div class="cart-progress">
+            <div class="progress-step">
+                <div class="step-icon">1</div>
+                <span>Giỏ Hàng</span>
+            </div>
+            <div class="progress-line"></div>
+            <div class="progress-step active">
+                <div class="step-icon">2</div>
+                <span>Thanh Toán</span>
+            </div>
+            <div class="progress-line"></div>
+            <div class="progress-step">
+                <div class="step-icon">3</div>
+                <span>Hoàn Tất</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── CHECKOUT CONTENT ───────────────────────────── -->
+<section class="cart-section">
+    <div class="container">
+        <form action="/checkout/place-order" id="checkoutForm" method="post">
+            <th:block th:if="${selectedIds != null}">
+                <input type="hidden" name="selectedIds" th:each="id : ${selectedIds}" th:value="${id}" />
+            </th:block>
+            <div class="cart-content">
+
+                <!-- LEFT: Billing + Product List -->
+                <div class="cart-items">
+
+                    <!-- THÔNG TIN THANH TOÁN -->
+                    <div class="table-header">
+                        <div class="header-item header-product">THÔNG TIN THANH TOÁN</div>
+                    </div>
+
+                    <div class="billing-form">
+                        <div class="form-group">
+                            <label>Họ tên <span class="required">*</span></label>
+                            <input class="form-input" name="hoTen"
+                                   placeholder="Nhập họ tên của bạn" required
+                                   th:value="${user != null ? user.hoTen : ''}" type="text">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Email <span class="required">*</span></label>
+                            <input class="form-input" name="email"
+                                   placeholder="Nhập email của bạn" required
+                                   th:value="${user != null ? user.email : ''}" type="email">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Số điện thoại <span class="required">*</span></label>
+                            <input class="form-input" name="soDienThoai"
+                                   placeholder="Nhập số điện thoại" required
+                                   th:value="${user != null ? user.soDienThoai : ''}" type="tel">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Địa chỉ giao hàng <span class="required">*</span></label>
+                            <div class="address-input-group">
+                                <input class="form-input" id="selectedAddress" name="diaChi"
+                                       placeholder="Chọn địa chỉ giao hàng"
+                                       readonly required
+                                       th:value="${defaultAddress != null ? defaultAddress.diaChiChiTiet : ''}"
+                                       type="text">
+                                <input id="selectedAddressId" name="diaChiId"
+                                       th:value="${defaultAddress != null ? defaultAddress.maDC : ''}"
+                                       type="hidden">
+                                <button class="btn-change-address" onclick="openAddressModal()" type="button">
+                                    <i class="fas fa-map-marker-alt"></i> Chọn địa chỉ
+                                </button>
+                            </div>
+                            <small class="form-hint"
+                                   th:if="${diaChiList == null or #lists.isEmpty(diaChiList)}">
+                                <i class="fas fa-info-circle"></i>
+                                Bạn chưa có địa chỉ nào. Vui lòng thêm trong
+                                <a th:href="@{/profile#addresses}">trang cá nhân</a>.
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Ghi chú đơn hàng (tùy chọn)</label>
+                            <textarea class="form-textarea" name="ghiChu"
+                                      placeholder="Ghi chú về đơn hàng, ví dụ: thời gian hay chỉ dẫn địa điểm giao hàng chi tiết hơn."
+                                      rows="4"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- DANH SÁCH SẢN PHẨM -->
+                    <div class="table-header product-list-header">
+                        <div class="header-item header-product">SẢN PHẨM</div>
+                        <div class="header-item header-center">ĐƠN GIÁ</div>
+                        <div class="header-item header-center">SỐ LƯỢNG</div>
+                        <div class="header-item header-center">THÀNH TIỀN</div>
+                    </div>
+
+                    <!-- Empty Cart -->
+                    <div class="empty-cart-notice"
+                         th:if="${cartItems == null or #lists.isEmpty(cartItems)}">
+                        <div class="empty-icon">🛒</div>
+                        <h3>Giỏ hàng trống</h3>
+                        <p>Hãy thêm sản phẩm để thanh toán</p>
+                        <a class="btn btn-primary" href="/sanpham">
+                            <i class="fas fa-shopping-bag"></i> Mua Sắm Ngay
+                        </a>
+                    </div>
+
+                    <!-- Product List -->
+                    <div th:unless="${cartItems == null or #lists.isEmpty(cartItems)}">
+                        <div class="cart-item" th:each="item : ${cartItems}">
+                            <div class="item-product">
+                                <div class="product-image">
+                                    <img th:alt="${item.sanPham.tenSP}"
+                                         th:src="${item.sanPham.hinhAnh != null && !item.sanPham.hinhAnh.isEmpty() ? '/images/' + item.sanPham.hinhAnh : 'https://picsum.photos/200/200?random=' + item.sanPham.maSP}">
+                                </div>
+                                <div class="product-info">
+                                    <h3 th:text="${item.sanPham.tenSP}">Tên sản phẩm</h3>
+                                    <div class="product-category">
+                                        <i class="fas fa-tag"></i>
+                                        <span th:text="${item.sanPham.loaiSanPham != null ? item.sanPham.loaiSanPham.tenLoai : 'Danh mục'}">Danh mục</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item-price">
+                                <span class="current-price"
+                                      th:text="${#numbers.formatDecimal(item.sanPham.gia, 0, 'COMMA', 0, 'POINT')} + 'đ'">0đ</span>
+                            </div>
+                            <div class="item-quantity">
+                                <span th:text="${item.soLuong}">1</span>
+                            </div>
+                            <div class="item-total">
+                                <span class="total-price"
+                                      th:text="${#numbers.formatDecimal(item.sanPham.gia * item.soLuong, 0, 'COMMA', 0, 'POINT')} + 'đ'">0đ</span>
+                            </div>
+                        </div>
+
+                        <div class="cart-actions">
+                            <div class="left-actions"></div>
+                            <div class="right-actions">
+                                <a class="btn btn-secondary" th:href="@{/giohang}">
+                                    <i class="fas fa-arrow-left"></i> Quay Lại Giỏ Hàng
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT: Order Summary -->
+                <div class="cart-summary">
+                    <div class="summary-card">
+                        <h3 class="summary-title">ĐƠN HÀNG CỦA BẠN</h3>
+                        <div class="summary-content">
+                            <div class="summary-row">
+                                <span>Tạm tính (<span th:text="${cartItems != null ? cartItems.size() : 0}">0</span> sản phẩm):</span>
+                                <span id="subtotalAmount"
+                                      th:text="${#numbers.formatDecimal(orderSubtotal != null ? orderSubtotal : 0, 0, 'COMMA', 0, 'POINT')} + 'đ'">0đ</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Phí vận chuyển:</span>
+                                <span class="shipping-fee">30,000đ</span>
+                            </div>
+                            <div class="summary-row total-row">
+                                <span>Tổng cộng:</span>
+                                <span class="total-amount"
+                                      th:text="${#numbers.formatDecimal((orderTotal != null ? orderTotal : 0) + 30000, 0, 'COMMA', 0, 'POINT')} + 'đ'">30,000đ</span>
+                            </div>
+
+                            <!-- Payment Methods -->
+                            <div class="payment-methods">
+                                <h4>Phương thức thanh toán</h4>
+                                <label class="payment-method">
+                                    <input checked name="paymentMethod" type="radio" value="2">
+                                    <div class="method-content">
+                                        <i class="fas fa-money-bill-wave"></i>
+                                        <span>Chuyển khoản ngân hàng</span>
+                                    </div>
+                                </label>
+                                <label class="payment-method">
+                                    <input name="paymentMethod" type="radio" value="1">
+                                    <div class="method-content">
+                                        <i class="fas fa-hand-holding-usd"></i>
+                                        <span>Trả tiền mặt khi nhận hàng (COD)</span>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <!-- Checkout Button -->
+                            <button class="checkout-btn" type="submit">
+                                <i class="fas fa-credit-card"></i>
+                                Tiến Hành Thanh Toán
+                            </button>
+
+                            <!-- Security Info -->
+                            <div class="security-info">
+                                <div class="security-item">
+                                    <i class="fas fa-shield-alt"></i>
+                                    <span>Bảo mật thanh toán 100%</span>
+                                </div>
+                                <div class="security-item">
+                                    <i class="fas fa-undo"></i>
+                                    <span>Đổi trả trong 7 ngày</span>
+                                </div>
+                                <div class="security-item">
+                                    <i class="fas fa-shipping-fast"></i>
+                                    <span>Giao hàng nhanh 24h</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</section>
+
+<!-- ── ADDRESS MODAL ──────────────────────────────── -->
+<div class="address-modal" id="addressModal">
+    <div class="address-modal-content">
+        <div class="address-modal-header">
+            <h3><i class="fas fa-map-marked-alt"></i> Chọn Địa Chỉ Giao Hàng</h3>
+            <button class="address-modal-close" onclick="closeAddressModal()">&times;</button>
+        </div>
+        <div class="address-modal-body">
+            <div class="address-list"
+                 th:if="${diaChiList != null and !#lists.isEmpty(diaChiList)}">
+                <div class="address-item"
+                     onclick="selectAddress(this)"
+                     th:attr="data-id=${address.maDC}, data-address=${address.diaChiChiTiet}"
+                     th:classappend="${address.macDinh ? 'selected' : ''}"
+                     th:each="address : ${diaChiList}">
+                    <div class="address-item-header">
+                        <span class="address-item-name"
+                              th:text="${user != null ? user.hoTen : 'Người nhận'}">Người nhận</span>
+                        <span class="address-default-badge" th:if="${address.macDinh}">
+                            <i class="fas fa-star"></i> Mặc định
+                        </span>
+                    </div>
+                    <div class="address-item-detail" th:text="${address.diaChiChiTiet}">
+                        Địa chỉ chi tiết
+                    </div>
+                    <div class="address-item-phone">
+                        <i class="fas fa-phone"></i>
+                        <span th:text="${user != null ? user.soDienThoai : ''}">Số điện thoại</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="no-address-message"
+                 th:if="${diaChiList == null or #lists.isEmpty(diaChiList)}">
+                <i class="fas fa-map-marker-alt"></i>
+                <p>Bạn chưa có địa chỉ nào</p>
+            </div>
+
+            <a class="btn-add-address" th:href="@{/profile#addresses}">
+                <i class="fas fa-plus-circle"></i> Thêm Địa Chỉ Mới
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<th:block th:replace="~{fragments/layout :: footer}"></th:block>
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+<script th:src="@{/js/checkout.js}"></script>
+<script>
+    function openAddressModal() {
+        document.getElementById('addressModal').classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeAddressModal() {
+        document.getElementById('addressModal').classList.remove('show');
+        document.body.style.overflow = 'auto';
+    }
+
+    function selectAddress(element) {
+        document.querySelectorAll('.address-item').forEach(item => item.classList.remove('selected'));
+        element.classList.add('selected');
+        document.getElementById('selectedAddress').value  = element.getAttribute('data-address');
+        document.getElementById('selectedAddressId').value = element.getAttribute('data-id');
+        setTimeout(() => closeAddressModal(), 300);
+    }
+
+    document.getElementById('addressModal').addEventListener('click', function(e) {
+        if (e.target === this) closeAddressModal();
+    });
+
+    document.getElementById('checkoutForm').addEventListener('submit', function(e) {
+        if (!document.getElementById('selectedAddressId').value) {
+            e.preventDefault();
+            alert('Vui lòng chọn địa chỉ giao hàng!');
+            openAddressModal();
+        }
+    });
+</script>
+</body>
+</html>

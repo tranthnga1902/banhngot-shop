@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tiệm Bánh Ngọt | Tươi Mỗi Ngày</title>
+    <th:block th:replace="~{fragments/layout :: head('Trang chủ')}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+</head>
+<body>
+
+    <th:block th:replace="~{fragments/layout :: header}"></th:block>
+
+    <!-- HERO SLIDER -->
+    <section class="hero-slider">
+        <div class="slider-wrapper">
+            <div class="slide active" th:style="|background-image: url('@{/images/Bia1.png}');|">
+                <div class="slide-overlay"></div>
+                <div class="slide-content">
+                    <h1>Bánh Tươi Mỗi Ngày</h1>
+                    <p class="fs-4 mb-4">Thơm ngon từ lò, làm từ nguyên liệu tự nhiên</p>
+                    <a th:href="@{/sanpham}" class="btn btn-danger btn-custom shadow">Đặt Bánh Ngay</a>
+                </div>
+            </div>
+            <div class="slide" th:style="|background-image: url('@{/images/Bia2.jpg}');|">
+                <div class="slide-overlay"></div>
+                <div class="slide-content">
+                    <h1>Bánh Đặc Biệt</h1>
+                    <p class="fs-4 mb-4">Thiết kế theo yêu cầu — ngọt ngào từng khoảnh khắc</p>
+                    <a th:href="@{/sanpham}" class="btn btn-warning btn-custom shadow">Khám Phá</a>
+                </div>
+            </div>
+            <div class="slide" th:style="|background-image: url('@{/images/Bia3.jpg}');|">
+                <div class="slide-overlay"></div>
+                <div class="slide-content">
+                    <h1>Quà Tặng Từ Trái Tim</h1>
+                    <p class="fs-4 mb-4">Hộp bánh sang trọng — món quà ý nghĩa</p>
+                    <a th:href="@{/sanpham}" class="btn btn-light btn-custom shadow">Nhận Báo Giá</a>
+                </div>
+            </div>
+        </div>
+        <div class="slider-dots">
+            <button class="slider-dot active" onclick="goToSlide(0)"></button>
+            <button class="slider-dot" onclick="goToSlide(1)"></button>
+            <button class="slider-dot" onclick="goToSlide(2)"></button>
+        </div>
+    </section>
+
+<!-- TẠI SAO CHỌN CHÚNG TÔI -->
+<section class="section-padding why-section">
+    <div class="container text-center">
+        <h2 class="section-title">Tại Sao Chọn Tiệm Chúng Tôi?</h2>
+        <div class="row g-4 mt-2">
+
+            <div class="col-md-4">
+                <div class="why-card">
+                    <i class="fas fa-birthday-cake"></i>
+                    <h4>Làm Thủ Công</h4>
+                    <p>Bánh luôn được làm mới mỗi ngày, không chất bảo quản.</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="why-card">
+                    <i class="fas fa-leaf"></i>
+                    <h4>Nguyên Liệu Sạch</h4>
+                    <p>Nguyên liệu chọn lọc, an toàn cho sức khỏe.</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="why-card">
+                    <i class="fas fa-heart"></i>
+                    <h4>Hương Vị Đặc Biệt</h4>
+                    <p>Công thức riêng, mang đến trải nghiệm khác biệt.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+    <!-- SẢN PHẨM NỔI BẬT -->
+<section class="section-padding">
+    <div class="container">
+        <h2 class="section-title text-center">Bánh Nổi Bật</h2>
+        <div class="product-grid">
+            <div th:each="sp : ${sanPhamNoiBat}">
+                <div class="product-card">
+                    <div class="product-img-container">
+                        <img th:src="@{'/images/' + ${sp.hinhAnh}}" alt="Product">
+                        <span class="badge-hot">HOT</span>
+                    </div>
+                    <div class="p-3 text-center">
+                        <h5 th:text="${sp.tenSP}">Bánh Bông Lan</h5>
+                        <p class="text-danger fw-bold"
+                           th:text="${#numbers.formatDecimal(sp.gia, 0, 'COMMA', 0, 'POINT')} + ' đ'">120,000 đ</p>
+                        <a th:href="@{'/sanpham/' + ${sp.maSP}}" class="btn-outline-danger">
+                            <i class="fas fa-eye me-1"></i> Xem Chi Tiết
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fallback -->
+            <div th:if="${sanPhamNoiBat == null or sanPhamNoiBat.isEmpty()}">
+                <div class="product-card">
+                    <div class="product-img-container">
+                        <img src="https://via.placeholder.com/300x240?text=Banh" alt="Product">
+                        <span class="badge-hot">HOT</span>
+                    </div>
+                    <div class="p-3 text-center">
+                        <h5>Bánh Mẫu</h5>
+                        <p class="text-danger fw-bold">120,000 đ</p>
+                        <a href="/sanpham" class="btn-outline-danger">
+                            <i class="fas fa-eye me-1"></i> Xem Chi Tiết
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <!-- Footer — dùng fragment, không viết lại -->
+    <th:block th:replace="~{fragments/layout :: footer}"></th:block>
+
+    <!-- Scripts -->
+    <th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+
+    <th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const dots   = document.querySelectorAll('.slider-dot');
+
+        function goToSlide(index) {
+            slides[currentSlide].classList.remove('active');
+            dots[currentSlide].classList.remove('active');
+            currentSlide = index;
+            slides[currentSlide].classList.add('active');
+            dots[currentSlide].classList.add('active');
+        }
+
+        setInterval(() => goToSlide((currentSlide + 1) % slides.length), 5000);
+    </script>
+
+</body>
+</html>

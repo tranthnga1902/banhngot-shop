@@ -1,0 +1,534 @@
+/* ============================================
+   TIỆM BÁNH NGỌT — Warm Bakery
+   Font: Nunito (rounded, dễ thương) + Lora (tiêu đề thanh lịch)
+   Màu: Cream · Rosewood · Gold · Chocolate
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Nunito:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --cream:         #FDF6E3;
+    --cream-dark:    #F5E9C8;
+    --rosewood:      #A0522D;
+    --rosewood-dark: #7B3F1F;
+    --blush:         #F2C4A0;
+    --blush-light:   #FAE8D6;
+    --gold:          #C9974C;
+    --gold-light:    #E8C98A;
+    --choco:         #4A2E1A;
+    --choco-soft:    #6B3E26;
+    --sage:          #8FAF8A;
+    --white:         #FFFDF9;
+    --text:          #3D2010;
+    --text-muted:    #8C6A52;
+    --shadow-warm:   rgba(74, 46, 26, 0.12);
+}
+
+/* ============================================
+   BASE
+   ============================================ */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+    font-family: 'Nunito', sans-serif;
+    color: var(--text);
+    background-color: var(--cream);
+    line-height: 1.7;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Lora', serif;
+    color: var(--choco);
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+/* ============================================
+   HERO SLIDER
+   ============================================ */
+.hero-slider {
+    position: relative;
+    height: 88vh;
+    min-height: 580px;
+    overflow: hidden;
+    background: var(--cream-dark);
+}
+
+.hero-slider::after {
+    content: '';
+    position: absolute;
+    bottom: -2px; left: 0; right: 0;
+    height: 48px;
+    background: var(--cream);
+    clip-path: polygon(
+        0% 100%, 2% 0%, 4% 100%, 6% 0%, 8% 100%,
+        10% 0%, 12% 100%, 14% 0%, 16% 100%, 18% 0%,
+        20% 100%, 22% 0%, 24% 100%, 26% 0%, 28% 100%,
+        30% 0%, 32% 100%, 34% 0%, 36% 100%, 38% 0%,
+        40% 100%, 42% 0%, 44% 100%, 46% 0%, 48% 100%,
+        50% 0%, 52% 100%, 54% 0%, 56% 100%, 58% 0%,
+        60% 100%, 62% 0%, 64% 100%, 66% 0%, 68% 100%,
+        70% 0%, 72% 100%, 74% 0%, 76% 100%, 78% 0%,
+        80% 100%, 82% 0%, 84% 100%, 86% 0%, 88% 100%,
+        90% 0%, 92% 100%, 94% 0%, 96% 100%, 98% 0%, 100% 100%
+    );
+    z-index: 10;
+}
+
+.slider-wrapper { position: relative; height: 100%; width: 100%; }
+
+.slide {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 1.2s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.slide.active { opacity: 1; }
+
+.slide-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        160deg,
+        rgba(74, 46, 26, 0.35) 0%,
+        rgba(201, 151, 76, 0.15) 60%,
+        rgba(253, 246, 227, 0.10) 100%
+    );
+}
+
+.slide-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    max-width: 660px;
+    padding: 3rem 3.5rem;
+    background: rgba(253, 246, 227, 0.90);
+    border-radius: 20px;
+    border: 2px solid rgba(201, 151, 76, 0.35);
+    box-shadow: 0 24px 72px rgba(74, 46, 26, 0.22);
+    animation: floatCard 7s ease-in-out infinite;
+    backdrop-filter: blur(3px);
+}
+
+@keyframes floatCard {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-8px); }
+}
+
+.slide-content h1 {
+    font-family: 'Lora', serif;
+    font-size: 3.2rem;
+    font-style: italic;
+    color: var(--choco);
+    margin-bottom: 0.8rem;
+    font-weight: 700;
+}
+
+.slide-content p {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: var(--choco-soft);
+    margin-bottom: 2rem;
+}
+
+/* ── Buttons ── */
+.btn-custom {
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    padding: 0.8rem 2.2rem;
+    border-radius: 50px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.btn-danger.btn-custom {
+    background: var(--rosewood);
+    border-color: var(--rosewood);
+    color: var(--cream);
+}
+.btn-danger.btn-custom:hover {
+    background: var(--rosewood-dark);
+    border-color: var(--rosewood-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(160,82,45,0.35);
+    color: var(--cream);
+}
+
+.btn-warning.btn-custom {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--choco);
+}
+.btn-warning.btn-custom:hover {
+    background: var(--gold-light);
+    border-color: var(--gold-light);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(201,151,76,0.4);
+    color: var(--choco);
+}
+
+.btn-light.btn-custom {
+    background: var(--white);
+    border-color: var(--choco);
+    color: var(--choco);
+}
+.btn-light.btn-custom:hover {
+    background: var(--cream-dark);
+    transform: translateY(-2px);
+}
+
+/* Slider dots */
+.slider-dots {
+    position: absolute;
+    bottom: 68px; left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 12px;
+    z-index: 20;
+}
+.slider-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    border: 2px solid var(--choco);
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.slider-dot.active {
+    background: var(--gold);
+    border-color: var(--gold);
+    transform: scale(1.3);
+}
+.slider-dot:hover { background: var(--rosewood); border-color: var(--rosewood); }
+
+/* ============================================
+   SECTION COMMON
+   ============================================ */
+.section-padding { padding: 6rem 0; }
+
+.section-title {
+    font-family: 'Lora', serif;
+    font-size: 2.4rem;
+    font-style: italic;
+    font-weight: 700;
+    color: var(--choco);
+    margin-bottom: 3rem;
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+.section-title::after {
+    content: '';
+    display: block;
+    width: 80px; height: 3px;
+    background: linear-gradient(90deg, var(--rosewood), var(--gold));
+    margin: 0.8rem auto 0;
+    border-radius: 4px;
+}
+
+/* ============================================
+   WHY SECTION
+   ============================================ */
+.why-section {
+    background:
+        linear-gradient(160deg, rgba(253,246,227,0.97) 0%, rgba(250,232,214,0.97) 100%),
+        repeating-conic-gradient(rgba(201,151,76,0.07) 0% 25%, transparent 0% 50%) 50% / 36px 36px;
+    position: relative;
+}
+.why-section::before {
+    content: '';
+    position: absolute;
+    top: -24px; left: 0; right: 0;
+    height: 48px;
+    background: var(--cream);
+    clip-path: polygon(
+        0% 0%, 2% 100%, 4% 0%, 6% 100%, 8% 0%,
+        10% 100%, 12% 0%, 14% 100%, 16% 0%, 18% 100%,
+        20% 0%, 22% 100%, 24% 0%, 26% 100%, 28% 0%,
+        30% 100%, 32% 0%, 34% 100%, 36% 0%, 38% 100%,
+        40% 0%, 42% 100%, 44% 0%, 46% 100%, 48% 0%,
+        50% 100%, 52% 0%, 54% 100%, 56% 0%, 58% 100%,
+        60% 0%, 62% 100%, 64% 0%, 66% 100%, 68% 0%,
+        70% 100%, 72% 0%, 74% 100%, 76% 0%, 78% 100%,
+        80% 0%, 82% 100%, 84% 0%, 86% 100%, 88% 0%,
+        90% 100%, 92% 0%, 94% 100%, 96% 0%, 98% 100%, 100% 0%
+    );
+}
+
+.why-card {
+    background: var(--white);
+    padding: 2.5rem 2rem;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 8px 32px var(--shadow-warm);
+    transition: all 0.35s ease;
+    border: 1.5px solid rgba(201,151,76,0.2);
+    position: relative;
+    overflow: hidden;
+}
+.why-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--rosewood), var(--gold), var(--sage));
+}
+.why-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 52px rgba(74,46,26,0.16);
+    border-color: rgba(201,151,76,0.45);
+}
+.why-card i {
+    font-size: 2.4rem;
+    color: var(--rosewood);
+    margin-bottom: 1.2rem;
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+.why-card:hover i { transform: scale(1.12) rotate(-5deg); }
+.why-card h4 {
+    font-family: 'Lora', serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--choco);
+    margin-bottom: 0.8rem;
+}
+.why-card p {
+    font-family: 'Nunito', sans-serif;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.8;
+    font-weight: 400;
+}
+
+/* ============================================
+   PRODUCT CARDS - Vintage bakery style
+   ============================================ */
+.product-card {
+    background: var(--white);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(93, 64, 55, 0.1);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    border: 2px solid var(--magnolia-cream);
+}
+
+.product-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 50px rgba(93, 64, 55, 0.15);
+    border-color: var(--magnolia-pink);
+}
+
+.product-img-container {
+    position: relative;
+    height: 150px;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--magnolia-cream) 0%, var(--magnolia-yellow) 100%);
+}
+
+.product-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.product-card:hover .product-img-container img {
+    transform: scale(1.1);
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+/* Scalloped badge */
+.badge-hot {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: var(--magnolia-pink);
+    color: var(--magnolia-chocolate);
+    padding: 0.5rem 1rem;
+    border-radius: 50%;
+    font-family: 'Playfair Display', serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 15px rgba(244, 194, 194, 0.5);
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    line-height: 1;
+}
+
+.product-card h5 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: var(--magnolia-chocolate);
+    margin-bottom: 0.5rem;
+}
+
+.product-card .text-danger {
+    color: var(--magnolia-pink-dark) !important;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+}
+
+/* Vintage outline button */
+.btn-outline-danger {
+    border: 2px solid var(--magnolia-pink);
+    color: var(--magnolia-chocolate);
+    font-family: 'Lato', sans-serif;
+    font-weight: 600;
+    letter-spacing: 1px;
+    border-radius: 25px;
+    padding: 0.6rem;
+    transition: all 0.3s ease;
+    background: transparent;
+}
+
+.btn-outline-danger:hover {
+    background: var(--magnolia-pink);
+    border-color: var(--magnolia-pink);
+    color: var(--magnolia-chocolate);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(244, 194, 194, 0.4);
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+.home-footer {
+    background: linear-gradient(180deg, var(--choco) 0%, #2E1A0E 100%);
+    color: var(--cream);
+    padding: 5rem 0 2rem;
+    position: relative;
+    margin-top: 4rem;
+}
+.home-footer::before {
+    content: '';
+    position: absolute;
+    top: -24px; left: 0; right: 0;
+    height: 48px;
+    background: var(--cream);
+    clip-path: polygon(
+        0% 100%, 2% 0%, 4% 100%, 6% 0%, 8% 100%,
+        10% 0%, 12% 100%, 14% 0%, 16% 100%, 18% 0%,
+        20% 100%, 22% 0%, 24% 100%, 26% 0%, 28% 100%,
+        30% 0%, 32% 100%, 34% 0%, 36% 100%, 38% 0%,
+        40% 100%, 42% 0%, 44% 100%, 46% 0%, 48% 100%,
+        50% 0%, 52% 100%, 54% 0%, 56% 100%, 58% 0%,
+        60% 100%, 62% 0%, 64% 100%, 66% 0%, 68% 100%,
+        70% 0%, 72% 100%, 74% 0%, 76% 100%, 78% 0%,
+        80% 100%, 82% 0%, 84% 100%, 86% 0%, 88% 100%,
+        90% 0%, 92% 100%, 94% 0%, 96% 100%, 98% 0%, 100% 100%
+    );
+}
+.home-footer h5 {
+    font-family: 'Lora', serif;
+    color: var(--gold-light);
+    font-size: 1.3rem;
+    font-style: italic;
+    margin-bottom: 1.2rem;
+}
+.home-footer h5::after {
+    content: '';
+    display: block;
+    width: 32px; height: 1.5px;
+    background: var(--gold);
+    margin-top: 6px;
+}
+.home-footer p {
+    font-family: 'Nunito', sans-serif;
+    color: rgba(253,246,227,0.72);
+    line-height: 1.8;
+    font-weight: 300;
+}
+.home-footer a { color: var(--gold-light); transition: color 0.3s; text-decoration: none; }
+.home-footer a:hover { color: var(--blush); }
+.home-footer hr { border-color: rgba(201,151,76,0.25); margin: 3rem 0 2rem; }
+.home-footer .fab {
+    font-size: 1.2rem;
+    width: 40px; height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid rgba(201,151,76,0.4);
+    border-radius: 50%;
+    transition: all 0.35s ease;
+    color: var(--gold-light);
+}
+.home-footer .fab:hover {
+    background: var(--gold);
+    color: var(--choco);
+    border-color: var(--gold);
+    transform: rotate(360deg);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+    .slide-content { margin: 0 1rem; padding: 2rem 1.5rem; }
+    .slide-content h1 { font-size: 2rem; }
+    .section-title { font-size: 1.9rem; }
+    .why-card { margin-bottom: 1.5rem; }
+    .home-footer .text-end,
+    .home-footer .text-center { text-align: center !important; }
+    .home-footer .justify-content-end { justify-content: center !important; }
+}
+
+/* ============================================
+   ANIMATION
+   ============================================ */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.slide.active .slide-content { animation: fadeInUp 0.9s ease-out; }
+
+/* WHY SECTION — 3 cột đều nhau, 1 hàng ngang */
+.why-section .row.g-4 {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    gap: 24px !important;
+    --bs-gutter-x: 0 !important;
+    --bs-gutter-y: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+.why-section .row.g-4 > .col-md-4 {
+    flex: 1 1 0 !important;
+    width: 0 !important;
+    max-width: 100% !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    min-width: 0 !important;
+}
+
+@media (max-width: 768px) {
+    .why-section .row.g-4 {
+        flex-wrap: wrap !important;
+    }
+    .why-section .row.g-4 > .col-md-4 {
+        flex: 0 0 100% !important;
+        width: 100% !important;
+    }
+}

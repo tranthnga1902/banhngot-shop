@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Dashboard Nhân viên</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            /* Gam màu Tiệm Bánh - Tối giản & Hiện đại */
+            --mag-pink: #F4C2C2;
+            --mag-pink-light: #FAD4D4;
+            --mag-mint: #A8D5C2;
+            --mag-mint-light: #D4ECE4;
+            --mag-cream: #FDF6E3;
+            --mag-cream-dark: #F5ECD8;
+            --mag-chocolate: #3D2B1F;       /* Màu chính (Sidebar, Text đậm) */
+            --mag-chocolate-mid: #5D4037;   /* Màu nhạt hơn */
+            --mag-chocolate-light: #8D6E63; /* Màu text phụ */
+            --white: #FFFFFF;
+
+            --shadow-soft: 0 4px 24px rgba(61, 43, 31, 0.06);
+            --shadow-hover: 0 8px 30px rgba(61, 43, 31, 0.1);
+            --transition: all 0.25s ease;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Be Vietnam Pro', Arial, sans-serif; /* Sử dụng 2 font yêu cầu */
+            background-color: var(--mag-cream);
+            color: var(--mag-chocolate);
+            min-height: 100vh;
+        }
+
+        /* ============================================
+           SIDEBAR - Minimalist Dark Chocolate
+           ============================================ */
+        .sidebar {
+            width: 240px;
+            height: 100vh;
+            background-color: var(--mag-chocolate);
+            color: var(--mag-cream);
+            padding: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.05);
+        }
+
+        .sidebar-header {
+            padding: 28px 24px 20px;
+            border-bottom: 1px solid rgba(253, 246, 227, 0.1);
+        }
+
+        .sidebar-header h4 {
+            font-family: Arial, sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--mag-cream);
+            margin: 0 0 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .sidebar-header p {
+            font-size: 12px;
+            color: var(--mag-chocolate-light);
+            margin: 0;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 16px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .sidebar .nav-link {
+            font-family: Arial, sans-serif;
+            font-size: 13.5px;
+            font-weight: 400;
+            color: rgba(253, 246, 227, 0.65);
+            padding: 10px 14px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .sidebar .nav-link i {
+            font-size: 14px;
+            width: 18px;
+            text-align: center;
+        }
+
+        .sidebar .nav-link:hover {
+            background-color: rgba(253, 246, 227, 0.08);
+            color: var(--mag-cream);
+        }
+
+        .sidebar .nav-link.active {
+            background-color: var(--mag-chocolate-mid);
+            color: var(--white);
+            font-weight: 600;
+        }
+
+        .sidebar-divider {
+            height: 1px;
+            background: rgba(253, 246, 227, 0.1);
+            margin: 10px 12px;
+        }
+
+        .sidebar-footer {
+            padding: 16px 12px;
+            border-top: 1px solid rgba(253, 246, 227, 0.1);
+        }
+
+        .user-card {
+            padding: 12px;
+            background: rgba(253, 246, 227, 0.05);
+            border-radius: 8px;
+            margin-top: 12px;
+        }
+        .user-card small { color: var(--mag-chocolate-light); font-size: 11px; }
+        .user-card div { color: var(--white); font-size: 13px; margin-top: 2px; }
+
+        /* ============================================
+           MAIN CONTENT - Cream Background
+           ============================================ */
+        .main-content {
+            margin-left: 240px;
+            padding: 32px 36px;
+            min-height: 100vh;
+            background-color: var(--mag-cream);
+        }
+
+        .page-header {
+            margin-bottom: 28px;
+        }
+
+        .page-header h2 {
+            font-family: Arial, sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--mag-chocolate);
+            margin-bottom: 4px;
+        }
+
+        .page-header p {
+            font-size: 13.5px;
+            color: var(--mag-chocolate-light);
+            margin: 0;
+        }
+
+        /* ============================================
+           STAT CARDS - Minimalist & Clean
+           ============================================ */
+        .stat-card {
+            background: var(--white);
+            border: 1px solid rgba(61, 43, 31, 0.08);
+            border-radius: 12px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+            box-shadow: var(--shadow-soft);
+            height: 100%;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+            border-color: rgba(61, 43, 31, 0.15);
+        }
+
+        /* Accent màu bên trái (thay vì nhuộm cả thẻ) */
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 4px;
+            height: 100%;
+        }
+
+        .stat-card-orders::before { background-color: var(--mag-mint); }
+        .stat-card-pending::before { background-color: var(--mag-pink); }
+        .stat-card-posts::before { background-color: var(--mag-chocolate-mid); }
+
+        .stat-icon {
+            font-size: 1.5rem;
+            position: absolute;
+            right: 20px;
+            top: 24px;
+            opacity: 0.15;
+            color: var(--mag-chocolate);
+        }
+
+        .stat-label {
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--mag-chocolate-light);
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-family: Arial, sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--mag-chocolate);
+            margin-bottom: 10px;
+        }
+
+        .stat-link {
+            font-size: 12px;
+            color: var(--mag-chocolate-mid);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 600;
+        }
+        .stat-link:hover { color: var(--mag-chocolate); }
+
+        /* ============================================
+           TABLE & OTHER COMPONENTS
+           ============================================ */
+        .content-card {
+            background: var(--white);
+            border: 1px solid rgba(61, 43, 31, 0.08);
+            border-radius: 12px;
+            box-shadow: var(--shadow-soft);
+            overflow: hidden;
+        }
+
+        .card-header-custom {
+            padding: 16px 24px;
+            border-bottom: 1px solid rgba(61, 43, 31, 0.08);
+            background: transparent;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-family: Arial, sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--mag-chocolate);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0;
+        }
+
+        .table {
+            margin: 0;
+        }
+        .table thead th {
+            background-color: var(--mag-cream);
+            color: var(--mag-chocolate-light);
+            font-size: 11px;
+            text-transform: uppercase;
+            border-bottom: 1px solid rgba(61, 43, 31, 0.08);
+            padding: 12px 16px;
+        }
+        .table tbody td {
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(61, 43, 31, 0.05);
+            font-size: 13.5px;
+            vertical-align: middle;
+        }
+        .table tbody tr:last-child td { border-bottom: none; }
+
+        .badge {
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .badge.bg-warning { background-color: var(--mag-cream-dark) !important; color: #856404; }
+        .badge.bg-success { background-color: var(--mag-mint-light) !important; color: #155724; }
+        .badge.bg-info { background-color: #e7f5ff !important; color: #0c5460; }
+        .badge.bg-primary { background-color: var(--mag-mint) !important; color: var(--mag-chocolate); }
+        .badge.bg-danger { background-color: var(--mag-pink-light) !important; color: #721c24; }
+
+        .btn-view {
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: 6px;
+            background-color: var(--mag-chocolate);
+            color: var(--white);
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-view:hover { background-color: var(--mag-chocolate-mid); color: var(--white); }
+
+        .alert-info {
+            background-color: var(--mag-mint-light);
+            border: none;
+            color: var(--mag-chocolate-mid);
+            border-radius: 10px;
+        }
+
+        .btn-action {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        .btn-outline-choco {
+            border: 1px solid var(--mag-chocolate-light);
+            color: var(--mag-chocolate-mid);
+            background: transparent;
+        }
+        .btn-outline-choco:hover {
+            background: var(--mag-chocolate);
+            color: var(--white);
+            border-color: var(--mag-chocolate);
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .sidebar { width: 70px; overflow: hidden; }
+            .sidebar-header h4, .sidebar-header p, .sidebar .nav-link span, .sidebar-divider, .user-card { display: none; }
+            .sidebar .nav-link { justify-content: center; padding: 14px 0; }
+            .sidebar .nav-link i { margin: 0; font-size: 1.2rem; }
+            .main-content { margin-left: 70px; }
+        }
+    </style>
+</head>
+<body>
+<div class="d-flex">
+
+    <!-- ── SIDEBAR ───────────────────────────────────── -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h4>Tiệm Bánh Staff</h4>
+            <p>Bảng điều khiển</p>
+        </div>
+
+        <nav class="sidebar-nav">
+            <!-- 1. Dashboard -->
+            <a class="nav-link active" href="/staff/dashboard">
+                <i class="fas fa-chart-line"></i> <span>Dashboard</span>
+            </a>
+            <!-- 2. Đơn hàng -->
+            <a class="nav-link" href="/staff/orders">
+                <i class="fas fa-shopping-cart"></i> <span>Đơn hàng</span>
+            </a>
+            <!-- 3. Bài viết -->
+            
+            <!-- 4. Về trang chủ -->
+
+            <!-- 5. Hồ sơ cá nhân (Bổ sung cho đủ 6 phần) -->
+
+            
+            <div class="sidebar-footer">
+                <!-- 6. Đăng xuất -->
+                <a class="nav-link" href="/logout">
+                    <i class="fas fa-sign-out-alt"></i> <span>Đăng xuất</span>
+                </a>
+                
+                <div class="user-card">
+                    <small>Đang đăng nhập:</small>
+                    <div sec:authentication="principal.username">staff@example.com</div>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <!-- ── MAIN CONTENT ──────────────────────────────── -->
+    <div class="main-content flex-grow-1">
+        
+        <div class="page-header">
+            <h2>Tổng quan công việc</h2>
+            <p>Chào mừng quay trở lại! Đây là công việc hôm nay của bạn.</p>
+        </div>
+
+        <!-- Stat Cards -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="stat-card stat-card-orders">
+                    <i class="fas fa-shopping-cart stat-icon"></i>
+                    <div class="stat-label">Tổng đơn hàng</div>
+                    <div class="stat-value" th:text="${orderCount != null ? orderCount : 0}">0</div>
+                    <a class="stat-link" href="/staff/orders">
+                        Xem chi tiết <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card stat-card-pending">
+                    <i class="fas fa-clock stat-icon"></i>
+                    <div class="stat-label">Đơn chờ xử lý</div>
+                    <div class="stat-value" th:text="${pendingCount != null ? pendingCount : 0}">0</div>
+                    <a class="stat-link" href="/staff/orders?trangThai=Chờ xác nhận">
+                        Xử lý ngay <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alert -->
+        <div class="alert alert-info d-flex align-items-center mb-4" role="alert">
+            <i class="fas fa-info-circle fa-lg me-3"></i>
+            <div>
+                <strong>Lưu ý:</strong> Bạn có quyền xem và xử lý đơn hàng, quản lý bài viết. Không có quyền truy cập quản lý sản phẩm, tài khoản và báo cáo doanh thu.
+            </div>
+        </div>
+
+        <!-- Recent Orders Table -->
+        <div class="content-card">
+            <div class="card-header-custom">
+                <h5 class="card-title">
+                    <i class="fas fa-tasks text-muted"></i> Đơn hàng cần xử lý
+                </h5>
+                <a class="stat-link" href="/staff/orders">
+                    Xem tất cả <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>Mã ĐH</th>
+                        <th>Khách hàng</th>
+                        <th>Ngày đặt</th>
+                        <th>Tổng tiền</th>
+                        <th>Trạng thái</th>
+                        <th>Hành động</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${recentOrders == null or recentOrders.isEmpty()}">
+                        <td class="text-center py-5" colspan="6">
+                            <i class="fas fa-check-circle fa-2x mb-2" style="color: var(--mag-mint);"></i>
+                            <p class="mb-0 small">Tuyệt vời! Không có đơn hàng nào cần xử lý</p>
+                        </td>
+                    </tr>
+                    <tr th:each="order : ${recentOrders}">
+                        <td><strong>#<span th:text="${order.maDH}">1</span></strong></td>
+                        <td>
+                            <div th:text="${order.khachHang.hoTen}">Nguyễn Văn A</div>
+                            <small class="text-muted" th:text="${order.khachHang.soDienThoai}">0909000000</small>
+                        </td>
+                        <td th:text="${#temporals.format(order.ngayDat, 'dd/MM HH:mm')}">22/10 14:30</td>
+                        <td>
+                            <strong style="color: var(--mag-chocolate-mid);"
+                                    th:text="${#numbers.formatDecimal(order.tongTien, 0, 'COMMA', 0, 'POINT')} + 'đ'">100,000đ</strong>
+                        </td>
+                        <td>
+                            <span class="badge"
+                                  th:classappend="${order.trangThaiDonHang.tenTTDH == 'Chờ xác nhận' ? 'bg-warning text-dark' :
+                                                   order.trangThaiDonHang.tenTTDH == 'Đã xác nhận' ? 'bg-info' :
+                                                   order.trangThaiDonHang.tenTTDH == 'Đang giao' ? 'bg-primary' :
+                                                   order.trangThaiDonHang.tenTTDH == 'Hoàn thành' ? 'bg-success' : 'bg-danger'}"
+                                  th:text="${order.trangThaiDonHang.tenTTDH}">
+                                Chờ xác nhận
+                            </span>
+                        </td>
+                        <td>
+                            <a class="btn-view" th:href="@{/staff/orders/detail/{id}(id=${order.maDH})}">
+                                <i class="fas fa-eye"></i> Xử lý
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="content-card mt-4">
+            <div class="card-body">
+                <h5 class="card-title mb-3">
+                    <i class="fas fa-bolt text-muted"></i> Thao tác nhanh
+                </h5>
+                <div class="row g-2">
+                    <div class="col-md-4">
+                        <a class="btn btn-outline-choco w-100" href="/staff/orders?trangThai=Chờ xác nhận">
+                            <i class="fas fa-clock"></i> Đơn chờ xác nhận
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a class="btn btn-outline-choco w-100" href="/staff/orders?trangThai=Đang giao">
+                            <i class="fas fa-truck"></i> Đơn đang giao
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

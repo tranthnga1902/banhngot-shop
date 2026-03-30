@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title th:text="${title} + ' - Tết Market'">Tết Market</title>
+
+    <!-- Common CSS with cache busting - use simple version number -->
+    <link rel="stylesheet" th:href="@{/css/common.css?v=20251017}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <!-- Layout Design Override CSS -->
+    <style>
+        /* =============================================
+           DESIGN OVERRIDE — Editorial Bakery Style
+           Chỉ ghi đè CSS, không thay đổi cấu trúc HTML
+           ============================================= */
+
+        /* ── CSS VARIABLES ── */
+        :root {
+            --primary-red:   #C41E1E;
+            --primary-gold:  #C9952A;
+            --secondary-red: #D93030;
+            --dark-red:      #8B1212;
+            --light-gold:    #FDF6E3;
+            --cream:         #FAF7F2;
+            --cream-dark:    #F0E9DC;
+
+            --gray-50:  #FAF9F7;
+            --gray-100: #F3F0EA;
+            --gray-200: #E8E0D4;
+            --gray-300: #D4C9B8;
+            --gray-400: #A89880;
+            --gray-500: #7A6E6A;
+            --gray-600: #5A504C;
+            --gray-700: #3D3330;
+            --gray-800: #2A2018;
+            --gray-900: #1A1412;
+
+            --font-display: 'Playfair Display', Georgia, serif;
+            --font-body:    'DM Sans', 'Segoe UI', Tahoma, sans-serif;
+
+            --shadow-sm: 0 1px 3px 0 rgba(26,20,18,0.06);
+            --shadow-md: 0 4px 12px -2px rgba(26,20,18,0.10);
+            --shadow-lg: 0 10px 28px -4px rgba(26,20,18,0.12);
+            --shadow-xl: 0 20px 40px -8px rgba(26,20,18,0.14);
+        }
+
+        /* ── BASE ── */
+        body {
+            font-family: var(--font-body);
+            font-weight: 400;
+            line-height: 1.65;
+            color: var(--gray-800);
+            background-color: var(--cream);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-display);
+            font-weight: 500;
+            letter-spacing: -0.02em;
+            color: var(--gray-900);
+        }
+
+        p {
+            color: var(--gray-500);
+            font-weight: 300;
+            line-height: 1.7;
+        }
+
+        /* ── HEADER ── */
+        .header {
+            background: var(--white, #fff);
+            border-bottom: 1px solid var(--gray-200);
+            padding: 0;
+            box-shadow: none;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .header.scrolled {
+            box-shadow: var(--shadow-md);
+            background: rgba(255,255,255,0.97);
+            backdrop-filter: blur(8px);
+        }
+
+        .header-content {
+            height: 68px;
+            flex-wrap: nowrap;
+        }
+
+        /* ── LOGO ── */
+        .logo {
+            font-family: var(--font-display);
+            font-size: 1.35rem;
+            font-weight: 600;
+            color: var(--primary-red);
+            letter-spacing: -0.03em;
+            flex-shrink: 0;
+            transition: opacity 0.2s;
+        }
+        .logo:hover {
+            color: var(--primary-red);
+            opacity: 0.8;
+        }
+        .logo img { height: 36px; margin-right: 4px; }
+
+        /* ── NAV LINKS ── */
+        .nav-link {
+            font-family: var(--font-body);
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--gray-600);
+            padding: 6px 13px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            background: transparent;
+        }
+        .nav-link i {
+            font-size: 0.78rem;
+            opacity: 0.65;
+        }
+        .nav-link:hover {
+            color: var(--primary-red);
+            background: rgba(196,30,30,0.05);
+            transform: none;
+        }
+        .nav-link.active {
+            color: var(--primary-red);
+            background: transparent;
+            font-weight: 600;
+            border-bottom: 2px solid var(--primary-gold);
+            border-radius: 0;
+        }
+
+        /* Nút Đăng Nhập — ghi đè inline style */
+        .nav-link[href="/login"] {
+            background: transparent !important;
+            border: 1.5px solid var(--primary-gold) !important;
+            color: var(--primary-gold) !important;
+            border-radius: 20px !important;
+            padding: 5px 14px !important;
+        }
+        .nav-link[href="/login"]:hover {
+            background: var(--primary-gold) !important;
+            color: #fff !important;
+        }
+
+        /* Cart count badge */
+        .cart-count {
+            background: var(--primary-red);
+            color: #fff;
+            font-size: 0.62rem;
+            font-weight: 600;
+            min-width: 17px;
+            height: 17px;
+            border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            line-height: 1;
+            padding: 0 4px;
+        }
+
+        /* Mobile toggle */
+        .mobile-menu-toggle {
+            background: none;
+            border: 1.5px solid var(--gray-200);
+            color: var(--gray-700);
+            font-size: 0.95rem;
+            cursor: pointer;
+            padding: 7px 10px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        .mobile-menu-toggle:hover {
+            border-color: var(--primary-red);
+            color: var(--primary-red);
+        }
+
+        /* ── USER MENU / AVATAR / DROPDOWN ── */
+        .user-avatar {
+            background: rgba(196,30,30,0.06) !important;
+            border: 1.5px solid rgba(196,30,30,0.18) !important;
+            border-radius: 9999px !important;
+            padding: 5px 13px !important;
+            transition: all 0.2s ease !important;
+        }
+        .user-avatar:hover {
+            background: rgba(196,30,30,0.11) !important;
+            border-color: var(--primary-red) !important;
+            transform: none !important;
+        }
+        .avatar-img {
+            width: 28px !important;
+            height: 28px !important;
+            border: 2px solid var(--primary-gold) !important;
+        }
+        .user-name {
+            color: var(--gray-700) !important;
+            font-weight: 500 !important;
+            font-size: 0.78rem !important;
+            letter-spacing: 0.03em !important;
+        }
+        .user-avatar i.fa-chevron-down {
+            color: var(--gray-400) !important;
+            font-size: 0.68rem !important;
+        }
+
+        .user-dropdown {
+            border: 1px solid var(--gray-200) !important;
+            border-radius: 12px !important;
+            box-shadow: var(--shadow-xl) !important;
+            min-width: 250px !important;
+            background: #fff !important;
+        }
+
+        .dropdown-header {
+            background: var(--cream) !important;
+            border-radius: 12px 12px 0 0 !important;
+            padding: 14px 18px !important;
+            border-bottom: 1px solid var(--gray-100) !important;
+        }
+        .dropdown-header strong {
+            font-family: var(--font-body) !important;
+            font-size: 0.9rem !important;
+            color: var(--gray-900) !important;
+            font-weight: 600 !important;
+        }
+        .dropdown-header small {
+            font-size: 0.73rem !important;
+            color: var(--gray-500) !important;
+        }
+
+        .dropdown-item {
+            font-size: 0.84rem !important;
+            color: var(--gray-600) !important;
+            padding: 10px 18px !important;
+            transition: all 0.15s ease !important;
+            border-left: 3px solid transparent !important;
+        }
+        .dropdown-item:hover {
+            background: var(--cream) !important;
+            color: var(--primary-red) !important;
+            border-left-color: var(--primary-red) !important;
+        }
+        .dropdown-item i {
+            font-size: 0.88rem !important;
+            color: var(--gray-400) !important;
+            width: 17px !important;
+        }
+        .dropdown-item:hover i { color: var(--primary-red) !important; }
+
+        .dropdown-divider {
+            border-top: 1px solid var(--gray-100) !important;
+            margin: 3px 0 !important;
+        }
+
+        .dropdown-item.logout {
+            color: var(--primary-red) !important;
+            font-weight: 500 !important;
+        }
+        .dropdown-item.logout i { color: var(--primary-red) !important; }
+        .dropdown-item.logout:hover { background: #fef2f2 !important; }
+
+        /* ── BUTTONS ── */
+        .btn {
+            font-family: var(--font-body);
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            border-radius: 7px;
+            padding: 10px 20px;
+            transition: all 0.25s ease;
+        }
+        .btn-primary {
+            background: var(--primary-red);
+            border-color: var(--primary-red);
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: var(--dark-red);
+            border-color: var(--dark-red);
+            color: #fff;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(196,30,30,0.25);
+        }
+        .btn-secondary {
+            background: var(--primary-gold);
+            border-color: var(--primary-gold);
+            color: #fff;
+        }
+        .btn-secondary:hover {
+            background: #a87820;
+            border-color: #a87820;
+            color: #fff;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(201,149,42,0.25);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid var(--primary-red);
+            color: var(--primary-red);
+        }
+        .btn-outline:hover {
+            background: var(--primary-red);
+            color: #fff;
+        }
+
+        /* ── CARDS ── */
+        .card {
+            background: #fff;
+            border: 1px solid var(--gray-200);
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+        .card-header {
+            background: var(--cream);
+            border-bottom: 1px solid var(--gray-200);
+        }
+        .card-footer {
+            background: var(--gray-50);
+            border-top: 1px solid var(--gray-200);
+        }
+
+        /* ── FORMS ── */
+        .form-label {
+            font-size: 0.78rem;
+            font-weight: 500;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--gray-600);
+        }
+        .form-control {
+            border: 1.5px solid var(--gray-200);
+            border-radius: 7px;
+            font-family: var(--font-body);
+            font-size: 0.92rem;
+            color: var(--gray-800);
+            background: #fff;
+        }
+        .form-control:focus {
+            border-color: var(--primary-red);
+            box-shadow: 0 0 0 3px rgba(196,30,30,0.08);
+            outline: none;
+        }
+        .form-control.error {
+            border-color: var(--primary-red);
+            background: #fef2f2;
+        }
+
+        /* ── BREADCRUMB ── */
+        .breadcrumb {
+            background: #fff;
+            border-bottom: 1px solid var(--gray-200);
+            padding: 12px 0;
+        }
+        .breadcrumb-nav,
+        .breadcrumb-list {
+            font-size: 0.78rem;
+            letter-spacing: 0.04em;
+            list-style: none;
+        }
+        .breadcrumb-link { color: var(--gray-500); font-weight: 400; }
+        .breadcrumb-link:hover { color: var(--primary-red); }
+        .breadcrumb-item.active span { color: var(--gray-800); font-weight: 500; }
+        .breadcrumb-item + .breadcrumb-item::before {
+            content: '›';
+            color: var(--gray-300);
+            margin: 0 6px;
+        }
+
+        /* ── FOOTER ── */
+        .footer {
+            background: var(--gray-900);
+            padding-top: 56px;
+            padding-bottom: 24px;
+        }
+        .footer-section h3 {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--primary-gold);
+            letter-spacing: 0.01em;
+        }
+        .footer-section p,
+        .footer-section a {
+            color: var(--gray-400);
+            font-size: 0.84rem;
+            font-weight: 300;
+            line-height: 1.6;
+        }
+        .footer-section a:hover { color: var(--primary-gold); }
+        .footer-section p i {
+            color: var(--primary-gold);
+            font-size: 0.78rem;
+            margin-right: 7px;
+            opacity: 0.85;
+        }
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.08);
+            color: var(--gray-500);
+            font-size: 0.78rem;
+            font-weight: 300;
+        }
+
+        /* Social links */
+        .social-links { display: flex; gap: 10px; margin-top: 16px; }
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.14);
+            color: var(--gray-400);
+            font-size: 0.88rem;
+            margin-bottom: 0;
+            transition: all 0.2s;
+        }
+        .social-links a:hover {
+            background: var(--primary-gold);
+            border-color: var(--primary-gold);
+            color: #fff;
+        }
+
+        /* ── NOTIFICATIONS ── */
+        .notification {
+            background: #fff;
+            border: 1px solid var(--gray-200);
+            border-radius: 12px;
+            box-shadow: var(--shadow-xl);
+        }
+        .notification.success { border-left: 3px solid #10b981; }
+        .notification.error   { border-left: 3px solid var(--primary-red); }
+        .notification.warning { border-left: 3px solid var(--primary-gold); }
+        .notification.info    { border-left: 3px solid #3b82f6; }
+        .notification-content { font-size: 0.88rem; }
+        .notification.success i { color: #10b981; }
+        .notification.error   i { color: var(--primary-red); }
+        .notification.warning i { color: var(--primary-gold); }
+        .notification.info    i { color: #3b82f6; }
+
+        /* ── BACK TO TOP ── */
+        #back-to-top {
+            width: 42px; height: 42px;
+            background: var(--primary-red);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+        }
+        #back-to-top:hover {
+            background: var(--dark-red);
+            transform: translateY(-2px);
+        }
+
+        /* ── FIELD ERROR ── */
+        .field-error { color: var(--primary-red); font-size: 0.73rem; }
+
+        /* ── MOBILE ── */
+        @media (max-width: 768px) {
+            .header-content { height: auto; flex-wrap: wrap; padding: 8px 0; }
+
+            .mobile-menu-toggle {
+                display: block;
+                order: 2;
+            }
+
+            .logo { order: 1; font-size: 1.1rem; }
+
+            .nav {
+                order: 3;
+                width: 100%;
+                flex-direction: column;
+                gap: 0;
+                position: absolute;
+                top: 100%; left: 0; right: 0;
+                background: #fff;
+                border-top: 1px solid var(--gray-100);
+                border-radius: 0 0 12px 12px;
+                box-shadow: var(--shadow-lg);
+                padding: 12px;
+                transform: translateY(-8px);
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.25s ease;
+            }
+            .nav.show { transform: translateY(0); opacity: 1; visibility: visible; }
+
+            .nav-link {
+                width: 100%;
+                justify-content: flex-start;
+                padding: 10px 14px;
+                font-size: 0.85rem;
+                border-bottom: 1px solid var(--gray-100);
+                border-radius: 6px;
+                color: var(--gray-700);
+                text-transform: none;
+                letter-spacing: 0;
+            }
+            .nav-link:hover { background: var(--cream); }
+            .nav-link.active {
+                background: rgba(196,30,30,0.06);
+                border-left: 3px solid var(--primary-red);
+                border-bottom: 1px solid var(--gray-100);
+                border-radius: 0;
+            }
+
+            .nav-link[href="/login"] {
+                border-radius: 6px !important;
+                margin-top: 6px !important;
+                text-align: center !important;
+                justify-content: center !important;
+            }
+
+            .user-avatar { width: 100% !important; justify-content: flex-start !important; border-radius: 6px !important; }
+
+            .user-dropdown {
+                position: static !important;
+                transform: none !important;
+                opacity: 1 !important;
+                visibility: visible !important;
+                box-shadow: none !important;
+                border: 1px solid var(--gray-200) !important;
+                margin-top: 4px;
+            }
+
+            .cart-count { position: relative; top: auto; right: auto; margin-left: auto; }
+        }
+
+        @media (min-width: 769px) {
+            .mobile-menu-toggle { display: none !important; }
+            .nav {
+                position: static;
+                flex-direction: row;
+                opacity: 1;
+                visibility: visible;
+                transform: none;
+                padding: 0;
+                box-shadow: none;
+                background: transparent;
+            }
+        }
+    </style>
+
+    <!-- Page specific CSS will be inserted here -->
+    <th:block th:fragment="page-css"></th:block>
+
+    <!-- Meta tags for SEO -->
+    <meta content="Chuyên cung cấp sản phẩm Tết truyền thống chất lượng cao" name="description">
+    <meta content="quà tết, giỏ quà tết, hộp quà tết, mứt tết, bánh kẹo" name="keywords">
+    <meta content="Tết Market" name="author">
+
+    <!-- Favicon -->
+    <link rel="icon" th:href="@{/img/favicon.ico}" type="image/x-icon">
+
+    <!-- Prevent CSS cache -->
+    <meta content="no-cache, no-store, must-revalidate" http-equiv="Cache-Control">
+    <meta content="no-cache" http-equiv="Pragma">
+    <meta content="0" http-equiv="Expires">
+</head>
+
+<body>
+<!-- Header Fragment -->
+<header class="header" th:fragment="header">
+    <div class="container">
+        <div class="header-content">
+            <a class="logo" href="/">
+                <img alt="Logo" onerror="this.style.display='none'" th:src="@{/img/logo-trang.png}">
+                <span>🎂 Góc Bánh Nhỏ</span>
+            </a>
+
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <nav class="nav" id="mainNav">
+                <a class="nav-link" href="/" th:classappend="${currentPage == 'home' ? 'active' : ''}">
+                    <i class="fas fa-home"></i> Trang Chủ
+                </a>
+                <a class="nav-link" href="/sanpham" th:classappend="${currentPage == 'sanpham' ? 'active' : ''}">
+                    <i class="fas fa-shopping-bag"></i> Sản Phẩm
+                </a>
+                <a class="nav-link" href="/gioithieu" th:classappend="${currentPage == 'gioithieu' ? 'active' : ''}">
+                    <i class="fas fa-info-circle"></i> Giới Thiệu
+                </a>
+                <a class="nav-link" href="/giohang" style="position: relative;"
+                   th:classappend="${currentPage == 'giohang' ? 'active' : ''}">
+                    <i class="fas fa-shopping-cart"></i> Giỏ Hàng
+                    <span class="cart-count" id="cartCount" style="display: none;">0</span>
+                </a>
+
+                <!-- Hiển thị nút Đăng Nhập khi chưa đăng nhập -->
+                <a class="nav-link" href="/login" sec:authorize="!isAuthenticated()"
+                   style="background: rgba(251, 191, 36, 0.2); border: 1px solid var(--primary-gold);"
+                   th:classappend="${currentPage == 'login' ? 'active' : ''}">
+                    <i class="fas fa-sign-in-alt"></i> Đăng Nhập
+                </a>
+
+                <!-- Hiển thị Avatar và Dropdown khi đã đăng nhập -->
+                <div class="user-menu" sec:authorize="isAuthenticated()">
+                    <div class="user-avatar" onclick="toggleUserDropdown()">
+                        <img alt="Avatar"
+                             class="avatar-img" th:src="'https://ui-avatars.com/api/?name=' + ${#authentication.name} + '&background=fbbf24&color=991b1b&bold=true&size=40'">
+                        <span class="user-name" sec:authentication="name">User</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="user-dropdown" id="userDropdown">
+                        <div class="dropdown-header">
+                            <strong sec:authentication="name">user@example.com</strong>
+                            <small class="badge bg-info" id="userRoleBadge">Người dùng</small>
+                        </div>
+
+                        <!-- Link Dashboard cho Admin -->
+                        <div id="adminDashboardLink" style="display: none;">
+                            <a class="dropdown-item" href="/admin/dashboard"
+                               style="background: linear-gradient(135deg, rgba(220, 38, 38, 0.15), rgba(239, 68, 68, 0.1));
+                                      font-weight: 700; border-left: 4px solid #dc2626; color: #991b1b;">
+                                <i class="fas fa-tachometer-alt" style="color: #dc2626;"></i>
+                                <span style="color: #991b1b;">Dashboard Admin</span>
+                            </a>
+                            <hr class="dropdown-divider">
+                        </div>
+
+                        <!-- Link Dashboard cho Nhân viên -->
+                        <div id="staffDashboardLink" style="display: none;">
+                            <a class="dropdown-item" href="/staff/dashboard"
+                               style="background: linear-gradient(135deg, rgba(37, 99, 235, 0.15), rgba(59, 130, 246, 0.1));
+                                      font-weight: 700; border-left: 4px solid #2563eb; color: #1e40af;">
+                                <i class="fas fa-briefcase" style="color: #2563eb;"></i>
+                                <span style="color: #1e40af;">Dashboard Nhân viên</span>
+                            </a>
+                            <hr class="dropdown-divider">
+                        </div>
+
+                        <a class="dropdown-item" href="/profile">
+                            <i class="fas fa-user-circle"></i> Thông tin cá nhân
+                        </a>
+                        <a class="dropdown-item" href="/profile#orders">
+                            <i class="fas fa-box"></i> Đơn hàng của tôi
+                        </a>
+                        <a class="dropdown-item" href="/profile#addresses">
+                            <i class="fas fa-map-marker-alt"></i> Địa chỉ giao hàng
+                        </a>
+                        <a class="dropdown-item" href="/profile#password">
+                            <i class="fas fa-key"></i> Đổi mật khẩu
+                        </a>
+                        <hr class="dropdown-divider">
+                        <a class="dropdown-item logout" href="/logout">
+                            <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<!-- Breadcrumb Fragment -->
+<nav class="breadcrumb" th:fragment="breadcrumb(items)" th:if="${items != null and !items.isEmpty()}">
+    <div class="container">
+        <ol class="breadcrumb-list">
+            <li th:class="${iterStat.last} ? 'breadcrumb-item active' : 'breadcrumb-item'"
+                th:each="item, iterStat : ${items}">
+                <a class="breadcrumb-link" th:href="${item.url}" th:if="${!iterStat.last}"
+                   th:text="${item.name}">Home</a>
+                <span th:if="${iterStat.last}" th:text="${item.name}">Current</span>
+            </li>
+        </ol>
+    </div>
+</nav>
+
+<!-- Footer Fragment -->
+<footer class="footer" th:fragment="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>🎂 Góc Bánh Nhỏ</h3>
+                <p>Chuyên làm bánh thủ công tươi mỗi ngày, nguyên liệu sạch, không chất bảo quản — giao hàng tận nơi.</p>
+                <div class="social-links">
+                    <a aria-label="Facebook" href="#"><i class="fab fa-facebook"></i></a>
+                    <a aria-label="Instagram" href="#"><i class="fab fa-instagram"></i></a>
+                    <a aria-label="YouTube" href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h3>Liên Kết Nhanh</h3>
+                <a href="/">Trang Chủ</a>
+                <a href="/sanpham">Sản Phẩm</a>
+                <a href="/gioithieu">Giới Thiệu</a>
+            </div>
+            <div class="footer-section">
+                <h3>Liên Hệ</h3>
+                <p><i class="fas fa-map-marker-alt"></i> 123 Đường ABC, TP.HN</p>
+                <p><i class="fas fa-phone"></i> 0909.123.456</p>
+                <p><i class="fas fa-envelope"></i> lienhe@tiembanhngot</p>
+                <p><i class="fas fa-clock"></i> 8:00 - 22:00 hàng ngày</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; <span th:text="${currentYear}">2026</span> 🎂 Góc Bánh Nhỏ <span
+                    th:text="${tetYear}">2026</span>! 🎂</p>
+        </div>
+    </div>
+</footer>
+
+<!-- Common Scripts Fragment -->
+<div th:fragment="scripts">
+    <script th:src="@{/js/common.js?v=20251017}"></script>
+    <script th:src="@{/js/main.js?v=20251017}"></script>
+</div>
+
+<script>
+    // Kiểm tra role và hiển thị link phù hợp
+    document.addEventListener('DOMContentLoaded', function () {
+        // Fetch user role từ server
+        fetch('/api/user/role', {
+            method: 'GET',
+            credentials: 'same-origin'
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('=== DEBUG: Received role data:', data);
+                const role = data.role;
+                const badge = document.getElementById('userRoleBadge');
+
+                // Kiểm tra role và hiển thị badge + links tương ứng
+                if (role === 'Admin') {
+                    badge.textContent = 'Quản trị viên';
+                    badge.className = 'badge bg-danger';
+                    document.getElementById('adminLinks').style.display = 'block';
+                    document.getElementById('adminStaffDivider').style.display = 'block';
+                    document.getElementById('adminDashboardLink').style.display = 'block';
+                    console.log('=== DEBUG: Admin links displayed');
+                } else if (role === 'Nhân viên') {
+                    badge.textContent = 'Nhân viên';
+                    badge.className = 'badge bg-primary';
+                    document.getElementById('staffLinks').style.display = 'block';
+                    document.getElementById('adminStaffDivider').style.display = 'block';
+                    document.getElementById('staffDashboardLink').style.display = 'block';
+                    console.log('=== DEBUG: Staff links displayed');
+                } else if (role === 'Khách hàng') {
+                    badge.textContent = 'Khách hàng';
+                    badge.className = 'badge bg-success';
+                    console.log('=== DEBUG: Customer role');
+                } else {
+                    badge.textContent = 'Người dùng';
+                    badge.className = 'badge bg-info';
+                    console.log('=== DEBUG: Unknown role:', role);
+                }
+            })
+            .catch(err => {
+                console.error('Error fetching user role:', err);
+                // Fallback: ẩn các link admin/staff nếu có lỗi
+                const badge = document.getElementById('userRoleBadge');
+                if (badge) {
+                    badge.textContent = 'Người dùng';
+                    badge.className = 'badge bg-info';
+                }
+            });
+    });
+</script>
+</body>
+</html>

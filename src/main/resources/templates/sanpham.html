@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragments/layout :: head('Sản Phẩm')}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/sanpham.css?v=2}">
+</head>
+<body>
+<!-- Header -->
+<th:block th:replace="~{fragments/layout :: header}"></th:block>
+
+<!-- Breadcrumb -->
+<th:block th:replace="~{fragments/layout :: breadcrumb(items=${[{name:'Sản Phẩm'}]})}"></th:block>
+
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <div class="header-content">
+            <div class="header-text">
+                <h1>🥐 Thực Đơn Bánh</h1>
+                <p>Khám phá các loại bánh ngọt & mặn làm thủ công mỗi ngày — tươi, ngon, an toàn</p>
+            </div>
+            <div class="header-stats">
+                <div class="stat-item">
+                    <span class="stat-number" th:text="${sanPhamPage != null ? sanPhamPage.totalElements : 0}">0</span>
+                    <span class="stat-label">Loại Bánh</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" th:text="${categories != null ? #lists.size(categories) : 0}">0</span>
+                    <span class="stat-label">Danh Mục</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Thủ Công</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Products Section -->
+<section class="products-section">
+    <div class="container">
+        <div class="products-layout">
+            <!-- Sidebar Filters -->
+            <aside class="products-sidebar">
+                <form action="/sanpham" id="filterForm" method="get">
+                    <input name="page" type="hidden" value="0">
+                    <input name="size" type="hidden" value="6">
+
+                    <div class="filter-section">
+                        <h3 class="filter-title">
+                            <i class="fas fa-search"></i>
+                            Tìm Bánh
+                        </h3>
+                        <div class="search-wrapper">
+                            <label class="sr-only" for="searchInput">Tìm kiếm sản phẩm</label>
+                            <input class="search-input" id="searchInput" name="search" placeholder="Tìm tên bánh..."
+                                   th:value="${search}" type="text">
+                            <button class="search-btn" type="submit">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="filter-section">
+                        <h3 class="filter-title">
+                            <i class="fas fa-layer-group"></i>
+                            Loại Bánh
+                        </h3>
+                        <div class="filter-options">
+                            <label class="filter-option">
+                                <input name="loai" onchange="document.getElementById('filterForm').submit()" th:checked="${loai == null}" type="radio" value="">
+                                <span class="checkmark-circle"></span>
+                                <span class="option-text">Tất Cả</span>
+                            </label>
+                            <th:block th:if="${categories != null and #lists.size(categories) > 0}">
+                                <label class="filter-option" th:each="cat : ${categories}">
+                                    <input name="loai"
+                                           onchange="document.getElementById('filterForm').submit()"
+                                           th:checked="${loai != null and loai == cat.maLoai}"
+                                           th:value="${cat.maLoai}" type="radio">
+                                    <span class="checkmark-circle"></span>
+                                    <span class="option-text" th:text="${cat.tenLoai}">Danh mục</span>
+                                </label>
+                            </th:block>
+                            <th:block th:if="${categories == null or #lists.size(categories) == 0}">
+                                <div class="no-categories">Chưa có danh mục nào.</div>
+                            </th:block>
+                        </div>
+                    </div>
+
+                    <!-- Price Filter Section -->
+                    <div class="filter-section">
+                        <h3 class="filter-title">
+                            <i class="fas fa-tags"></i>
+                            Khoảng Giá
+                        </h3>
+                        <div class="price-range">
+                            <div class="price-input-group">
+                                <div class="price-input-wrapper">
+                                    <label class="price-label" for="priceMin">Từ</label>
+                                    <div class="input-with-currency">
+                                        <input aria-label="Giá tối thiểu" class="price-input" id="priceMin"
+                                               min="0" name="minPrice" placeholder="0"
+                                               step="1000" th:value="${minPrice}" type="number">
+                                        <span class="currency-symbol">₫</span>
+                                    </div>
+                                </div>
+                                <div class="price-separator">—</div>
+                                <div class="price-input-wrapper">
+                                    <label class="price-label" for="priceMax">Đến</label>
+                                    <div class="input-with-currency">
+                                        <input aria-label="Giá tối đa" class="price-input" id="priceMax"
+                                               min="0" name="maxPrice" placeholder="1000000"
+                                               step="1000" th:value="${maxPrice}" type="number">
+                                        <span class="currency-symbol">₫</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="price-presets">
+                            <button class="preset-btn" onclick="setPrice(0, 50000)" type="button">Dưới 50K</button>
+                            <button class="preset-btn" onclick="setPrice(50000, 100000)" type="button">50K–100K</button>
+                            <button class="preset-btn" onclick="setPrice(100000, 200000)" type="button">100K–200K</button>
+                            <button class="preset-btn" onclick="setPrice(200000, 500000)" type="button">200K–500K</button>
+                            <button class="preset-btn" onclick="setPrice(500000, null)" type="button">Trên 500K</button>
+                        </div>
+
+                        <button class="price-apply-btn" type="submit">
+                            <i class="fas fa-filter"></i> Áp Dụng
+                        </button>
+                    </div>
+
+                    <button class="clear-filters-btn" onclick="clearFilters()" type="button">
+                        <i class="fas fa-times-circle"></i> Xóa Bộ Lọc
+                    </button>
+                </form>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="products-main">
+                <!-- Toolbar -->
+                <div class="products-toolbar">
+                    <div class="toolbar-info">
+                        <span class="results-count" th:if="${sanPhamPage != null and sanPhamPage.totalElements > 0}">
+                            Hiển thị
+                            <span th:text="${sanPhamPage.number * sanPhamPage.size + 1}">1</span>–<span
+                                th:text="${sanPhamPage.number * sanPhamPage.size + sanPhamPage.numberOfElements}">6</span>
+                            trong <span th:text="${sanPhamPage.totalElements}">0</span> loại bánh
+                        </span>
+                        <span class="results-count" th:if="${sanPhamPage == null or sanPhamPage.totalElements == 0}">
+                            Không tìm thấy loại bánh nào
+                        </span>
+                    </div>
+                    <div class="toolbar-controls">
+                        <div class="sort-dropdown">
+                            <select class="sort-select" id="sortSelect" onchange="applySort()">
+                                <option th:selected="${sort == null or sort == 'moi'}" value="moi">Mới nhất</option>
+                                <option th:selected="${sort == 'gia-tang'}" value="gia-tang">Giá: Thấp → Cao</option>
+                                <option th:selected="${sort == 'gia-giam'}" value="gia-giam">Giá: Cao → Thấp</option>
+                            </select>
+                        </div>
+                        <a class="cart-icon-btn" href="/giohang">
+                            <i class="fas fa-shopping-basket"></i>
+                            <span class="cart-count-badge" id="cartCountBadge">0</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Products Grid -->
+                <div class="products-grid" id="productsGrid">
+                    <th:block th:if="${sanPhamPage == null or sanPhamPage.totalElements == 0}">
+                        <div class="no-products" style="grid-column: 1/-1; text-align: center; padding: 60px 20px;">
+                            <i class="fas fa-bread-slice" style="font-size: 56px; color: #ddd; margin-bottom: 20px;"></i>
+                            <h3>Chưa có bánh nào phù hợp</h3>
+                            <p>Vui lòng thử lại với bộ lọc khác</p>
+                        </div>
+                    </th:block>
+                    <th:block th:if="${sanPhamPage != null and sanPhamPage.totalElements > 0}">
+                        <div class="product-card" th:each="sp : ${sanPhamPage.content}">
+                            <a class="product-link" th:href="@{'/sanpham/' + ${sp.maSP}}">
+                                <div class="product-image">
+                                    <img th:src="@{'/images/' + ${sp.hinhAnh}}"
+                                         th:alt="${sp.tenSP}"
+                                         onerror="this.onerror=null; this.src='https://via.placeholder.com/300x300?text=No+Image';"/>
+                                    <div class="product-badge" th:if="${sp.soLuong < 10 and sp.soLuong > 0}">
+                                        <span class="badge badge-warning">Sắp hết</span>
+                                    </div>
+                                    <div class="product-badge" th:if="${sp.soLuong == 0}">
+                                        <span class="badge badge-danger">Hết hàng</span>
+                                    </div>
+                                </div>
+                                <div class="product-info">
+                                    <div class="product-category" th:if="${sp.loaiSanPham != null}"
+                                         th:text="${sp.loaiSanPham.tenLoai}">Danh mục</div>
+                                    <h3 class="product-title" th:text="${sp.tenSP}">Tên bánh</h3>
+                                    <div class="product-price">
+                                        <span class="price"
+                                              th:text="${#numbers.formatDecimal(sp.gia, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</span>
+                                    </div>
+                                    <div class="product-stock" th:if="${sp.soLuong > 0}">
+                                        <i class="fas fa-check-circle"></i> Còn hàng
+                                    </div>
+                                    <div class="product-stock out-of-stock" th:if="${sp.soLuong == 0}">
+                                        <i class="fas fa-times-circle"></i> Hết hàng
+                                    </div>
+                                </div>
+                            </a>
+                            <div class="product-actions">
+                                <button class="btn-add-to-cart"
+                                        onclick="addToCart(this); event.stopPropagation();"
+                                        th:data-product-id="${sp.maSP}"
+                                        th:data-product-name="${sp.tenSP}"
+                                        th:if="${sp.soLuong > 0}">
+                                    <i class="fas fa-shopping-basket"></i>
+                                    <span class="btn-text">Thêm Vào Giỏ</span>
+                                    
+                                </button>
+                                <button class="btn-add-to-cart btn-disabled" disabled th:if="${sp.soLuong == 0}">
+                                    <i class="fas fa-ban"></i>
+                                    <span class="btn-text">Hết Hàng</span>
+                                </button>
+                            </div>
+                        </div>
+                    </th:block>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination-wrapper" th:if="${sanPhamPage != null and sanPhamPage.totalPages > 1}">
+                    <div class="pagination">
+                        <a class="pagination-btn pagination-prev"
+                           th:href="@{/sanpham(page=${sanPhamPage.number - 1}, size=6, search=${search}, loai=${loai}, minPrice=${minPrice}, maxPrice=${maxPrice}, sort=${sort})}"
+                           th:if="${sanPhamPage.hasPrevious()}">
+                            <i class="fas fa-chevron-left"></i> <span>Trước</span>
+                        </a>
+                        <span class="pagination-btn pagination-prev disabled" th:unless="${sanPhamPage.hasPrevious()}">
+                            <i class="fas fa-chevron-left"></i> <span>Trước</span>
+                        </span>
+
+                        <div class="pagination-numbers">
+                            <a class="pagination-number"
+                               th:href="@{/sanpham(page=0, size=6, search=${search}, loai=${loai}, minPrice=${minPrice}, maxPrice=${maxPrice}, sort=${sort})}"
+                               th:if="${sanPhamPage.number > 2}">1</a>
+                            <span class="pagination-dots" th:if="${sanPhamPage.number > 3}">...</span>
+                            <th:block th:each="i : ${#numbers.sequence(0, sanPhamPage.totalPages - 1)}">
+                                <a class="pagination-number"
+                                   th:classappend="${i == sanPhamPage.number} ? 'active' : ''"
+                                   th:href="@{/sanpham(page=${i}, size=6, search=${search}, loai=${loai}, minPrice=${minPrice}, maxPrice=${maxPrice}, sort=${sort})}"
+                                   th:if="${i >= sanPhamPage.number - 2 and i <= sanPhamPage.number + 2}"
+                                   th:text="${i + 1}">1</a>
+                            </th:block>
+                            <span class="pagination-dots" th:if="${sanPhamPage.number < sanPhamPage.totalPages - 4}">...</span>
+                            <a class="pagination-number"
+                               th:href="@{/sanpham(page=${sanPhamPage.totalPages - 1}, size=6, search=${search}, loai=${loai}, minPrice=${minPrice}, maxPrice=${maxPrice}, sort=${sort})}"
+                               th:if="${sanPhamPage.number < sanPhamPage.totalPages - 3}"
+                               th:text="${sanPhamPage.totalPages}">10</a>
+                        </div>
+
+                        <a class="pagination-btn pagination-next"
+                           th:href="@{/sanpham(page=${sanPhamPage.number + 1}, size=6, search=${search}, loai=${loai}, minPrice=${minPrice}, maxPrice=${maxPrice}, sort=${sort})}"
+                           th:if="${sanPhamPage.hasNext()}">
+                            <span>Sau</span> <i class="fas fa-chevron-right"></i>
+                        </a>
+                        <span class="pagination-btn pagination-next disabled" th:unless="${sanPhamPage.hasNext()}">
+                            <span>Sau</span> <i class="fas fa-chevron-right"></i>
+                        </span>
+                    </div>
+                    <div class="pagination-info">
+                        Trang <strong th:text="${sanPhamPage.number + 1}">1</strong> /
+                        <strong th:text="${sanPhamPage.totalPages}">10</strong>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<th:block th:replace="~{fragments/layout :: footer}"></th:block>
+
+<!-- Scripts -->
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+<script>
+    document.addEventListener('DOMContentLoaded', function () { updateCartCount(); });
+
+    function updateCartCount() {
+        fetch('/api/giohang/count')
+            .then(response => response.json())
+            .then(data => {
+                const badge = document.getElementById('cartCountBadge');
+                if (badge && data.count !== undefined) {
+                    badge.textContent = data.count;
+                    badge.style.display = data.count > 0 ? 'flex' : 'none';
+                }
+            })
+            .catch(error => console.error('Error loading cart count:', error));
+    }
+
+    function applySort() {
+        const sortValue = document.getElementById('sortSelect').value;
+        const form = document.getElementById('filterForm');
+        let sortInput = form.querySelector('input[name="sort"]');
+        if (!sortInput) {
+            sortInput = document.createElement('input');
+            sortInput.type = 'hidden';
+            sortInput.name = 'sort';
+            form.appendChild(sortInput);
+        }
+        sortInput.value = sortValue;
+        form.submit();
+    }
+
+    function clearFilters() { window.location.href = '/sanpham?page=0&size=6'; }
+
+    document.querySelector('.search-input').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') { e.preventDefault(); document.getElementById('filterForm').submit(); }
+    });
+
+    function addToCart(button) {
+        const productId = button.dataset.productId;
+        const productName = button.dataset.productName;
+        if (button.classList.contains('adding') || button.classList.contains('added')) return;
+        button.classList.add('adding');
+        button.disabled = true;
+        fetch('/api/giohang/add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `sanPhamId=${productId}&soLuong=1`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                button.classList.remove('adding');
+                button.classList.add('added');
+                updateCartCount();
+                const badge = document.getElementById('cartCountBadge');
+                if (badge) { badge.classList.add('pulse'); setTimeout(() => badge.classList.remove('pulse'), 500); }
+                showNotification(`✓ Đã thêm "${productName}" vào giỏ!`, 'success');
+                setTimeout(() => { button.classList.remove('added'); button.disabled = false; }, 2000);
+            } else {
+                button.classList.remove('adding');
+                button.disabled = false;
+                if (data.message) {
+                    if (data.message.includes('đăng nhập')) {
+                        showNotification('⚠️ Vui lòng đăng nhập để thêm vào giỏ!', 'warning');
+                        setTimeout(() => { window.location.href = '/login?redirect=/sanpham'; }, 1500);
+                    } else { showNotification('⚠️ ' + data.message, 'warning'); }
+                } else { showNotification('❌ Có lỗi xảy ra, vui lòng thử lại!', 'error'); }
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            button.classList.remove('adding');
+            button.disabled = false;
+            showNotification('❌ Có lỗi xảy ra, vui lòng thử lại!', 'error');
+        });
+    }
+
+    function showNotification(message, type) {
+        const existing = document.querySelector('.cart-notification');
+        if (existing) existing.remove();
+        const notification = document.createElement('div');
+        notification.className = `cart-notification ${type}`;
+        notification.innerHTML = `
+            <div class="notification-content">
+                <span class="notification-message">${message}</span>
+                <button class="notification-close" onclick="this.parentElement.parentElement.remove()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>`;
+        document.body.appendChild(notification);
+        setTimeout(() => notification.classList.add('show'), 100);
+        setTimeout(() => { notification.classList.remove('show'); setTimeout(() => notification.remove(), 400); }, 3000);
+    }
+
+    function setPrice(min, max) {
+        const minInput = document.getElementById('priceMin');
+        const maxInput = document.getElementById('priceMax');
+        if (minInput) minInput.value = min;
+        if (maxInput) maxInput.value = max;
+        document.getElementById('filterForm').submit();
+    }
+
+    const filterForm = document.getElementById('filterForm');
+    if (filterForm) {
+        filterForm.addEventListener('submit', function (e) { convertPriceToVND && convertPriceToVND(); });
+    }
+</script>
+</body>
+</html>

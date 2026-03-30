@@ -1,0 +1,251 @@
+/* ===========================================
+   ABOUT PAGE - CLEAN + ARIAL VERSION
+   =========================================== */
+
+:root {
+    --brown: #4A2E1A;
+    --brown-light: #7B4A2E;
+    --cream: #FDF6E3;
+    --cream-dark: #F5ECD8;
+    --pink: #F4C2C2;
+    --text: #333;
+    --text-light: #777;
+    --white: #fff;
+
+    --shadow: 0 6px 20px rgba(0,0,0,0.08);
+}
+
+/* ===== RESET ===== */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    margin: 0;
+}
+
+/* ===== CONTAINER ===== */
+/* Thay vào đó, định nghĩa chiều rộng cho các section nội dung */
+.story-section .container,
+.mission-vision-section .container,
+.why-choose-section .container,
+.testimonials-section .container {
+    max-width: 900px; /* Giới hạn chiều rộng nội dung */
+    margin: auto;
+    padding: 0 20px;
+}
+
+/* Riêng page-header (phần banner tiêu đề) thường nên rộng bằng menu, 
+   nên ta không giới hạn max-width 900px cho nó, hoặc để nó kế thừa layout chung. */
+.page-header .container {
+    max-width: 100%; /* Để header rộng bằng menu */
+}
+/* ===========================================
+   HEADER
+   =========================================== */
+.page-header {
+    background: linear-gradient(135deg, var(--brown), var(--brown-light));
+    padding: 80px 0;
+    text-align: center;
+    color: white;
+}
+
+.header-icon {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+.header-content h1 {
+    font-size: 40px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: white;
+}
+
+/* 👉 SLOGAN (CHỖ BẠN HỎI) */
+.header-content p {
+    font-size: 20px;          /* to hơn */
+    font-weight: 600;         /* đậm hơn */
+    line-height: 1.8;
+    max-width: 600px;
+    margin: auto;
+    color: #ffe9d6;           /* sáng hơn cho nổi */
+}
+
+/* ===========================================
+   STORY
+   =========================================== */
+.story-section {
+    padding: 60px 0;
+    background: white;
+}
+
+.story-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+}
+
+.story-image img {
+    width: 100%;
+    border-radius: 15px;
+}
+
+.story-content h2 {
+    font-size: 28px;
+    font-weight: bold;
+    color: var(--brown); /* tiêu đề nâu đậm */
+    margin-bottom: 15px;
+}
+
+.story-content p {
+    line-height: 1.8;
+}
+
+/* ===========================================
+   SECTION TITLE
+   =========================================== */
+.section-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: var(--brown); /* nâu đậm */
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.section-subtitle {
+    text-align: center;
+    color: var(--text-light);
+    margin-bottom: 30px;
+}
+
+/* ===========================================
+   MISSION - VISION
+   =========================================== */
+.mission-vision-section {
+    padding: 60px 0;
+    background: var(--cream-dark);
+}
+
+.mv-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+}
+
+.mv-card {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: var(--shadow);
+    transition: 0.3s;
+}
+
+.mv-card:hover {
+    transform: translateY(-5px);
+}
+
+.mv-card h3 {
+    color: var(--brown);
+    margin-bottom: 10px;
+}
+
+/* ===========================================
+   WHY CHOOSE
+   =========================================== */
+.why-choose-section {
+    padding: 60px 0;
+    background: white;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.feature-card {
+    background: var(--cream);
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    transition: 0.3s;
+}
+
+.feature-card:hover {
+    background: white;
+    transform: translateY(-5px);
+    box-shadow: var(--shadow);
+}
+
+.feature-card h3 {
+    color: var(--brown);
+}
+
+/* ===========================================
+   TESTIMONIAL
+   =========================================== */
+.testimonials-section {
+    padding: 60px 0;
+    background: var(--cream-dark);
+}
+
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.testimonial-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+}
+
+.testimonial-text {
+    font-style: italic;
+    margin-bottom: 15px;
+}
+
+.author-info h4 {
+    color: var(--brown);
+}
+
+/* ===========================================
+   RESPONSIVE
+   =========================================== */
+@media (max-width: 992px) {
+    .story-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .mv-grid,
+    .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .testimonials-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 576px) {
+    .mv-grid,
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .header-content h1 {
+        font-size: 28px;
+    }
+
+    .header-content p {
+        font-size: 16px;
+    }
+}

@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Tài khoản - Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --cream:        #FDF6E3;
+            --cream-dark:   #F5E9C8;
+            --white:        #FFFFFF;
+            --rosewood:     #A0522D;
+            --rosewood-dk:  #7B3F1F;
+            --gold:         #C9974C;
+            --gold-light:   #EDD99A;
+            --choco:        #4A2E1A;
+            --choco-soft:   #6B3E26;
+            --sage:         #5A8A56;
+            --text:         #3D2010;
+            --text-muted:   #8C6A52;
+            --border:       rgba(201, 151, 76, 0.25);
+            --border-hover: rgba(160, 82, 45, 0.45);
+            --shadow:       0 2px 12px rgba(74, 46, 26, 0.08);
+            --shadow-hover: 0 10px 32px rgba(74, 46, 26, 0.16);
+            --radius:       14px;
+            --radius-sm:    8px;
+            --radius-pill:  50px;
+            --transition:   all 0.25s ease;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: var(--cream);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* ── SIDEBAR ─────────────────────────────────── */
+        .sidebar {
+            width: 240px;
+            height: 100vh;
+            background: var(--choco);
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+            overflow-y: auto;
+        }
+
+        .sidebar-brand {
+            padding: 28px 24px 20px;
+            border-bottom: 1px solid rgba(201,151,76,0.15);
+        }
+
+        .sidebar-brand-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--gold);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .sidebar-brand h5 {
+            font-family: Arial, sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--cream);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin: 0;
+        }
+
+        .sidebar-brand p {
+            font-family: sans-serif;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin: 2px 0 0;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 16px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .sidebar-label {
+            font-family: Arial, sans-serif;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            padding: 8px 12px 4px;
+            margin-top: 4px;
+        }
+
+        .sidebar .nav-link {
+            font-family: Arial, sans-serif;
+            font-size: 13.5px;
+            font-weight: 400;
+            color: rgba(253, 246, 227, 0.65);
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            text-decoration: none;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .sidebar .nav-link i {
+            font-size: 14px;
+            width: 18px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .sidebar .nav-link:hover {
+            background: rgba(201, 151, 76, 0.12);
+            color: var(--gold-light);
+        }
+
+        .sidebar .nav-link.active {
+            background: var(--rosewood);
+            color: var(--cream);
+            font-weight: 700;
+        }
+
+        .sidebar .nav-link.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 60%;
+            background: var(--gold);
+            border-radius: 0 3px 3px 0;
+        }
+
+        .sidebar-footer {
+            padding: 16px 12px;
+            border-top: 1px solid rgba(201,151,76,0.12);
+        }
+
+        .sidebar-footer .nav-link {
+            font-family: Arial, sans-serif;
+            font-size: 13px;
+            color: rgba(253,246,227,0.5);
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .sidebar-footer .nav-link:hover {
+            background: rgba(220,50,50,0.15);
+            color: #f87171;
+        }
+
+        /* ── MAIN ────────────────────────────────────── */
+        .main-content {
+            flex: 1;
+            min-width: 0;
+            padding: 32px 36px;
+            margin-left: 240px;
+        }
+
+        .page-header {
+            margin-bottom: 28px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .page-header h2 {
+            font-family: Arial, sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--choco);
+            letter-spacing: -0.02em;
+            margin-bottom: 4px;
+        }
+
+        .page-header p {
+            font-family: sans-serif;
+            font-size: 13.5px;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        /* ── ALERTS ──────────────────────────────────── */
+        .alert {
+            font-family: sans-serif;
+            font-size: 13.5px;
+            border-radius: var(--radius-sm);
+            border: none;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+        }
+
+        .alert-success {
+            background: rgba(90,138,86,0.12);
+            color: #2e5e2b;
+        }
+
+        .alert-danger {
+            background: rgba(160,82,45,0.12);
+            color: var(--rosewood-dk);
+        }
+
+        /* ── PANEL CARD ──────────────────────────────── */
+        .panel-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .panel-card-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--white);
+        }
+
+        .panel-card-header h5 {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--choco);
+            margin: 0;
+        }
+
+        .header-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--rosewood);
+            flex-shrink: 0;
+        }
+
+        .panel-card-body { padding: 24px; }
+
+        /* ── FORM ────────────────────────────────────── */
+        .form-label {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            color: var(--choco-soft);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            display: block;
+        }
+
+        .form-control,
+        .form-select {
+            font-family: sans-serif;
+            font-size: 13.5px;
+            color: var(--text);
+            background: var(--cream);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 9px 13px;
+            transition: var(--transition);
+            box-shadow: none;
+            width: 100%;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            background: var(--white);
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(201,151,76,0.15);
+            outline: none;
+        }
+
+        .form-text {
+            font-family: sans-serif;
+            font-size: 11.5px;
+            color: var(--text-muted);
+            margin-top: 5px;
+            display: block;
+        }
+
+        .btn-admin {
+            font-family: Arial, sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            background: var(--rosewood);
+            border: none;
+            color: var(--cream);
+            padding: 10px 22px;
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .btn-admin:hover {
+            background: var(--rosewood-dk);
+            color: var(--cream);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(160,82,45,0.3);
+        }
+
+        .btn-cancel {
+            font-family: Arial, sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            background: transparent;
+            border: 1px solid var(--border-hover);
+            color: var(--text-muted);
+            padding: 10px 20px;
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            transition: var(--transition);
+        }
+
+        .btn-cancel:hover {
+            background: var(--cream-dark);
+            color: var(--choco);
+        }
+
+        /* ── TABLE ───────────────────────────────────── */
+        .table { margin: 0; }
+
+        .table thead th {
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            background: var(--cream);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 16px;
+            white-space: nowrap;
+        }
+
+        .table tbody td {
+            font-family: sans-serif;
+            font-size: 13.5px;
+            color: var(--text);
+            border-bottom: 1px solid var(--border);
+            padding: 13px 16px;
+            vertical-align: middle;
+        }
+
+        .table tbody tr:last-child td { border-bottom: none; }
+        .table tbody tr:hover td { background: var(--cream); }
+
+        .acc-id {
+            font-family: Arial, sans-serif;
+            font-weight: 700;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .acc-name {
+            font-family: Arial, sans-serif;
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--choco);
+        }
+
+        /* Role badges */
+        .role-badge {
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: var(--radius-pill);
+        }
+
+        .role-admin    { background: rgba(160,82,45,0.15);  color: var(--rosewood-dk); }
+        .role-staff    { background: rgba(201,151,76,0.18); color: #7a5000; }
+        .role-customer { background: rgba(90,138,86,0.15);  color: var(--sage); }
+
+        /* Status badges */
+        .status-badge {
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: var(--radius-pill);
+        }
+
+        .status-active   { background: rgba(90,138,86,0.15);  color: var(--sage); }
+        .status-inactive { background: rgba(74,46,26,0.08);   color: var(--text-muted); }
+
+        /* Action buttons */
+        .btn-act {
+            width: 30px; height: 30px;
+            border-radius: var(--radius-sm);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            text-decoration: none;
+            border: 1px solid;
+            cursor: pointer;
+            transition: var(--transition);
+            background: transparent;
+        }
+
+        .btn-act-edit {
+            border-color: rgba(201,151,76,0.3);
+            color: #92660a;
+            background: rgba(201,151,76,0.08);
+        }
+
+        .btn-act-edit:hover {
+            background: var(--gold);
+            color: var(--white);
+            border-color: var(--gold);
+        }
+
+        .btn-act-toggle {
+            border-color: rgba(59,130,246,0.25);
+            color: #2563eb;
+            background: rgba(59,130,246,0.07);
+        }
+
+        .btn-act-toggle:hover {
+            background: #3b82f6;
+            color: var(--white);
+            border-color: #3b82f6;
+        }
+
+        .btn-act-del {
+            border-color: rgba(160,82,45,0.25);
+            color: var(--rosewood);
+            background: rgba(160,82,45,0.07);
+        }
+
+        .btn-act-del:hover {
+            background: var(--rosewood);
+            color: var(--white);
+            border-color: var(--rosewood);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 48px 20px;
+            color: var(--text-muted);
+            font-family: sans-serif;
+            font-size: 13.5px;
+        }
+
+        /* ── MODAL ───────────────────────────────────── */
+        .modal-content {
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .modal-header {
+            background: var(--choco);
+            border-bottom: 1px solid rgba(201,151,76,0.2);
+            border-radius: var(--radius) var(--radius) 0 0;
+            padding: 18px 24px;
+        }
+
+        .modal-title {
+            font-family: Arial, sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--cream);
+        }
+
+        .btn-close-white { filter: invert(1); }
+
+        .modal-body { padding: 24px; background: var(--white); }
+
+        .modal-footer {
+            background: var(--cream);
+            border-top: 1px solid var(--border);
+            padding: 16px 24px;
+            border-radius: 0 0 var(--radius) var(--radius);
+        }
+    </style>
+</head>
+<body>
+<div class="d-flex">
+
+    <!-- ── SIDEBAR ────────────────────────────────── -->
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <h5>Tiệm bánh Admin</h5>
+            <p>Quản trị hệ thống</p>
+        </div>
+
+        <nav class="sidebar-nav">
+            <span class="sidebar-label">Tổng quan</span>
+            <a class="nav-link" th:href="@{/admin/dashboard}">
+                <i class="fas fa-chart-line"></i> Dashboard
+            </a>
+
+            <span class="sidebar-label">Quản lý</span>
+            <a class="nav-link" th:href="@{/admin/sanpham}">
+                <i class="fas fa-box"></i> Sản phẩm
+            </a>
+            <a class="nav-link" th:href="@{/admin/orders}">
+                <i class="fas fa-shopping-cart"></i> Đơn hàng
+            </a>
+            <a class="nav-link active" th:href="@{/admin/taikhoan}">
+                <i class="fas fa-users"></i> Tài khoản
+            </a>
+            <!-- <a class="nav-link" th:href="@{/admin/baiviet}">
+                <i class="fas fa-newspaper"></i> Bài viết
+            </a> -->
+            <a class="nav-link" th:href="@{/admin/thongke}">
+                <i class="fas fa-chart-bar"></i> Thống kê
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a class="nav-link" th:href="@{/logout}">
+                <i class="fas fa-sign-out-alt"></i> Đăng xuất
+            </a>
+        </div>
+    </div>
+
+    <!-- ── MAIN CONTENT ──────────────────────────── -->
+    <div class="main-content">
+
+        <div class="page-header">
+            <div>
+                <h2>Quản lý Tài khoản</h2>
+                <p>Thêm, sửa, xóa, khóa/mở khóa và phân quyền cho tài khoản.</p>
+            </div>
+            <button class="btn-admin" data-bs-target="#addAccountModal" data-bs-toggle="modal" th:if="${!isEdit}">
+                <i class="fas fa-plus"></i> Thêm tài khoản
+            </button>
+        </div>
+
+        <!-- Alerts -->
+        <div class="alert alert-success alert-dismissible fade show" role="alert" th:if="${success}">
+            <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
+            <button class="btn-close" data-bs-dismiss="alert" type="button"></button>
+        </div>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" th:if="${error}">
+            <i class="fas fa-exclamation-circle"></i> <span th:text="${error}"></span>
+            <button class="btn-close" data-bs-dismiss="alert" type="button"></button>
+        </div>
+
+        <!-- Form Sửa Tài khoản -->
+        <div class="panel-card" th:if="${isEdit}">
+            <div class="panel-card-header">
+                <span class="header-dot"></span>
+                <h5>Chỉnh sửa tài khoản</h5>
+            </div>
+            <div class="panel-card-body">
+                <form th:action="@{/admin/taikhoan/save}" method="post">
+                    <input type="hidden" name="maTK" th:value="${account.maTK}">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Họ và Tên *</label>
+                            <input type="text" name="hoTen" class="form-control"
+                                   th:value="${account.hoTen}" required
+                                   placeholder="Nhập họ và tên">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email *</label>
+                            <input type="email" name="email" class="form-control"
+                                   th:value="${account.email}" required
+                                   placeholder="example@gmail.com">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Số điện thoại</label>
+                            <input type="text" name="soDienThoai" class="form-control"
+                                   th:value="${account.soDienThoai}"
+                                   placeholder="0123456789">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Mật khẩu mới</label>
+                            <input type="password" name="matKhauMoi" class="form-control"
+                                   placeholder="Để trống nếu không thay đổi">
+                            <span class="form-text">Mặc định: 123456</span>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Vai trò *</label>
+                            <select name="vaiTro.maVT" class="form-select" required>
+                                <option value="">-- Chọn vai trò --</option>
+                                <option th:each="vt : ${vaiTros}"
+                                        th:value="${vt.maVT}"
+                                        th:text="${vt.tenVT}"
+                                        th:selected="${account.vaiTro != null && account.vaiTro.maVT == vt.maVT}">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-12 d-flex gap-2">
+                            <button type="submit" class="btn-admin">
+                                <i class="fas fa-save"></i> Cập nhật
+                            </button>
+                            <a th:href="@{/admin/taikhoan}" class="btn-cancel">
+                                <i class="fas fa-times"></i> Hủy
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Accounts Table -->
+        <div class="panel-card">
+            <div class="panel-card-header">
+                <span class="header-dot"></span>
+                <h5>Danh sách tài khoản</h5>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Họ tên</th>
+                        <th>Email</th>
+                        <th>SĐT</th>
+                        <th>Vai trò</th>
+                        <th>Trạng thái</th>
+                        <th>Ngày tạo</th>
+                        <th>Hành động</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${accounts == null or accounts.isEmpty()}">
+                        <td colspan="8">
+                            <div class="empty-state">
+                                <i class="fas fa-users-slash" style="font-size:28px;opacity:0.3;display:block;margin-bottom:10px;"></i>
+                                Chưa có tài khoản nào
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr th:each="acc : ${accounts}">
+                        <td><span class="acc-id">#<span th:text="${acc.maTK}">1</span></span></td>
+                        <td><span class="acc-name" th:text="${acc.hoTen}">Nguyễn Văn A</span></td>
+                        <td>
+                            <span style="font-family:sans-serif;font-size:13px;" th:text="${acc.email}">email@example.com</span>
+                        </td>
+                        <td th:text="${acc.soDienThoai ?: 'N/A'}">0123456789</td>
+                        <td>
+                            <span class="role-badge"
+                                  th:classappend="${#strings.toLowerCase(acc.vaiTro.tenVT) == 'admin' ? 'role-admin' :
+                                                   (#strings.toLowerCase(acc.vaiTro.tenVT) == 'staff' || #strings.toLowerCase(acc.vaiTro.tenVT) == 'nhân viên' ? 'role-staff' : 'role-customer')}"
+                                  th:text="${acc.vaiTro.tenVT}">
+                                Admin
+                            </span>
+                        </td>
+                        <td>
+                            <span class="status-badge"
+                                  th:classappend="${acc.trangThai ? 'status-active' : 'status-inactive'}"
+                                  th:text="${acc.trangThai ? 'Hoạt động' : 'Ẩn'}">
+                                Hoạt động
+                            </span>
+                        </td>
+                        <td th:text="${acc.ngayTao != null ? #temporals.format(acc.ngayTao, 'dd/MM/yyyy') : 'N/A'}">
+                            22/10/2025
+                        </td>
+                        <td>
+                            <div class="d-flex gap-1">
+                                <!-- Sửa -->
+                                <a th:href="@{/admin/taikhoan/edit/{id}(id=${acc.maTK})}"
+                                   class="btn-act btn-act-edit" title="Sửa">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <!-- Khóa/Mở khóa -->
+                                <form th:action="@{/admin/taikhoan/{id}/toggle-status(id=${acc.maTK})}"
+                                      method="post" style="display:inline;">
+                                    <button type="submit" class="btn-act btn-act-toggle"
+                                            th:title="${acc.trangThai ? 'Ẩn tài khoản' : 'Hiển thị tài khoản'}">
+                                        <i class="fas" th:classappend="${acc.trangThai ? 'fa-eye-slash' : 'fa-eye'}"></i>
+                                    </button>
+                                </form>
+                                <!-- Xóa -->
+                                <form th:action="@{/admin/taikhoan/delete/{id}(id=${acc.maTK})}"
+                                      method="post" style="display:inline;"
+                                      onsubmit="return confirm('Bạn có chắc muốn xóa tài khoản này?');">
+                                    <button type="submit" class="btn-act btn-act-del" title="Xóa">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div><!-- /main-content -->
+</div>
+
+<!-- ── MODAL THÊM TÀI KHOẢN ──────────────────────── -->
+<div class="modal fade" id="addAccountModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-user-plus"></i> Thêm Tài khoản Mới</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form th:action="@{/admin/taikhoan/save}" method="post">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Họ và Tên *</label>
+                            <input type="text" name="hoTen" class="form-control" required
+                                   placeholder="Nhập họ và tên">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email *</label>
+                            <input type="email" name="email" class="form-control" required
+                                   placeholder="example@gmail.com">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Số điện thoại</label>
+                            <input type="text" name="soDienThoai" class="form-control"
+                                   placeholder="0123456789">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Mật khẩu</label>
+                            <input type="password" name="matKhauMoi" class="form-control"
+                                   placeholder="Để trống = mặc định 123456">
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Vai trò *</label>
+                            <select name="vaiTro.maVT" class="form-select" required>
+                                <option value="">-- Chọn vai trò --</option>
+                                <option th:each="vt : ${vaiTros}"
+                                        th:value="${vt.maVT}"
+                                        th:text="${vt.tenVT}">
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer mt-4 px-0 pb-0">
+                        <button type="button" class="btn-cancel" data-bs-dismiss="modal">
+                            <i class="fas fa-times"></i> Đóng
+                        </button>
+                        <button type="submit" class="btn-admin">
+                            <i class="fas fa-save"></i> Thêm mới
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Quản lý Đơn hàng - Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --cream:        #FDF6E3;
+            --cream-dark:   #F5E9C8;
+            --white:        #FFFFFF;
+            --rosewood:     #A0522D;
+            --rosewood-dk:  #7B3F1F;
+            --gold:         #C9974C;
+            --gold-light:   #EDD99A;
+            --choco:        #4A2E1A;
+            --choco-soft:   #6B3E26;
+            --sage:         #5A8A56;
+            --text:         #3D2010;
+            --text-muted:   #8C6A52;
+            --border:       rgba(201, 151, 76, 0.25);
+            --border-hover: rgba(160, 82, 45, 0.45);
+            --shadow:       0 2px 12px rgba(74, 46, 26, 0.08);
+            --shadow-hover: 0 10px 32px rgba(74, 46, 26, 0.16);
+            --radius:       14px;
+            --radius-sm:    8px;
+            --radius-pill:  50px;
+            --transition:   all 0.25s ease;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: var(--cream);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* ── SIDEBAR ─────────────────────────────────── */
+        .sidebar {
+            width: 240px;
+            height: 100vh;
+            background: var(--choco);
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+            overflow-y: auto;
+        }
+
+        .sidebar-brand {
+            padding: 28px 24px 20px;
+            border-bottom: 1px solid rgba(201,151,76,0.15);
+        }
+
+        .sidebar-brand-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--gold);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .sidebar-brand h5 {
+            font-family: Arial, sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--cream);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin: 0;
+        }
+
+        .sidebar-brand p {
+            font-family: sans-serif;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin: 2px 0 0;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 16px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .sidebar-label {
+            font-family: Arial, sans-serif;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            padding: 8px 12px 4px;
+            margin-top: 4px;
+        }
+
+        .sidebar .nav-link {
+            font-family: Arial, sans-serif;
+            font-size: 13.5px;
+            font-weight: 400;
+            color: rgba(253, 246, 227, 0.65);
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            text-decoration: none;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .sidebar .nav-link i {
+            font-size: 14px;
+            width: 18px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .sidebar .nav-link:hover {
+            background: rgba(201, 151, 76, 0.12);
+            color: var(--gold-light);
+        }
+
+        .sidebar .nav-link.active {
+            background: var(--rosewood);
+            color: var(--cream);
+            font-weight: 700;
+        }
+
+        .sidebar .nav-link.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 60%;
+            background: var(--gold);
+            border-radius: 0 3px 3px 0;
+        }
+
+        .sidebar-footer {
+            padding: 16px 12px;
+            border-top: 1px solid rgba(201,151,76,0.12);
+        }
+
+        .sidebar-footer .nav-link {
+            font-family: Arial, sans-serif;
+            font-size: 13px;
+            color: rgba(253,246,227,0.5);
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .sidebar-footer .nav-link:hover {
+            background: rgba(220,50,50,0.15);
+            color: #f87171;
+        }
+
+        /* ── MAIN ────────────────────────────────────── */
+        .main-content {
+            flex: 1;
+            min-width: 0;
+            padding: 32px 36px;
+            margin-left: 240px;
+        }
+
+        .page-header {
+            margin-bottom: 28px;
+        }
+
+        .page-header h2 {
+            font-family: Arial, sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--choco);
+            letter-spacing: -0.02em;
+            margin-bottom: 4px;
+        }
+
+        .page-header p {
+            font-family: sans-serif;
+            font-size: 13.5px;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        /* ── ALERTS ──────────────────────────────────── */
+        .alert {
+            font-family: sans-serif;
+            font-size: 13.5px;
+            border-radius: var(--radius-sm);
+            border: none;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+        }
+
+        .alert-success {
+            background: rgba(90,138,86,0.12);
+            color: #2e5e2b;
+        }
+
+        .alert-danger {
+            background: rgba(160,82,45,0.12);
+            color: var(--rosewood-dk);
+        }
+
+        /* ── PANEL CARD ──────────────────────────────── */
+        .panel-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .panel-card-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--white);
+        }
+
+        .panel-card-header h5 {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--choco);
+            margin: 0;
+        }
+
+        .header-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--rosewood);
+            flex-shrink: 0;
+        }
+
+        .panel-card-body { padding: 24px; }
+
+        /* ── SEARCH FORM ─────────────────────────────── */
+        .form-control,
+        .form-select {
+            font-family: sans-serif;
+            font-size: 13.5px;
+            color: var(--text);
+            background: var(--cream);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 9px 13px;
+            transition: var(--transition);
+            box-shadow: none;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            background: var(--white);
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(201,151,76,0.15);
+            outline: none;
+        }
+
+        .btn-search {
+            font-family: Arial, sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            background: var(--rosewood);
+            border: none;
+            color: var(--cream);
+            padding: 9px 20px;
+            border-radius: var(--radius-sm);
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-search:hover {
+            background: var(--rosewood-dk);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(160,82,45,0.3);
+        }
+
+        /* ── TABLE ───────────────────────────────────── */
+        .table { margin: 0; }
+
+        .table thead th {
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            background: var(--cream);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 16px;
+            white-space: nowrap;
+        }
+
+        .table tbody td {
+            font-family: sans-serif;
+            font-size: 13.5px;
+            color: var(--text);
+            border-bottom: 1px solid var(--border);
+            padding: 13px 16px;
+            vertical-align: middle;
+        }
+
+        .table tbody tr:last-child td { border-bottom: none; }
+        .table tbody tr:hover td { background: var(--cream); }
+
+        .order-id {
+            font-family: Arial, sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            color: var(--choco);
+        }
+
+        .customer-name {
+            font-family: Arial, sans-serif;
+            font-size: 13.5px;
+            font-weight: 600;
+            color: var(--choco);
+        }
+
+        .customer-phone {
+            font-family: sans-serif;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .price-text {
+            font-family: Arial, sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            color: var(--rosewood);
+        }
+
+        .status-badge {
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: var(--radius-pill);
+            letter-spacing: 0.04em;
+        }
+
+        .badge-wait    { background: rgba(201,151,76,0.15); color: #92660a; }
+        .badge-confirm { background: rgba(59,130,246,0.12); color: #1d4ed8; }
+        .badge-ship    { background: rgba(90,138,86,0.15);  color: var(--sage); }
+        .badge-done    { background: rgba(16,185,129,0.12); color: #065f46; }
+        .badge-cancel  { background: rgba(160,82,45,0.12);  color: var(--rosewood); }
+
+        .btn-view {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: var(--radius-sm);
+            background: rgba(74,46,26,0.07);
+            border: 1px solid var(--border);
+            color: var(--choco-soft);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: var(--transition);
+        }
+
+        .btn-view:hover {
+            background: var(--rosewood);
+            color: var(--cream);
+            border-color: var(--rosewood);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 48px 20px;
+            color: var(--text-muted);
+            font-family: sans-serif;
+            font-size: 13.5px;
+        }
+
+        /* ── PAGINATION ──────────────────────────────── */
+        .pagination {
+            margin: 0;
+            gap: 4px;
+        }
+
+        .page-link {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--choco-soft);
+            background: var(--cream);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm) !important;
+            padding: 6px 12px;
+            transition: var(--transition);
+        }
+
+        .page-link:hover {
+            background: var(--gold-light);
+            color: var(--choco);
+            border-color: var(--gold);
+        }
+
+        .page-item.active .page-link {
+            background: var(--rosewood);
+            border-color: var(--rosewood);
+            color: var(--cream);
+        }
+
+        .page-item.disabled .page-link {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+<div class="d-flex">
+
+    <!-- ── SIDEBAR ────────────────────────────────── -->
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <h5>Tiệm bánh Admin</h5>
+            <p>Quản trị hệ thống</p>
+        </div>
+
+        <nav class="sidebar-nav">
+            <span class="sidebar-label">Tổng quan</span>
+            <a class="nav-link" href="/admin/dashboard">
+                <i class="fas fa-chart-line"></i> Dashboard
+            </a>
+
+            <span class="sidebar-label">Quản lý</span>
+            <a class="nav-link" href="/admin/sanpham">
+                <i class="fas fa-box"></i> Sản phẩm
+            </a>
+            <a class="nav-link active" href="/admin/orders">
+                <i class="fas fa-shopping-cart"></i> Đơn hàng
+            </a>
+            <a class="nav-link" href="/admin/taikhoan">
+                <i class="fas fa-users"></i> Tài khoản
+            </a>
+            <!-- <a class="nav-link" href="/admin/baiviet">
+                <i class="fas fa-newspaper"></i> Bài viết
+            </a> -->
+            <a class="nav-link" href="/admin/thongke">
+                <i class="fas fa-chart-bar"></i> Thống kê
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a class="nav-link" href="/logout">
+                <i class="fas fa-sign-out-alt"></i> Đăng xuất
+            </a>
+        </div>
+    </div>
+
+    <!-- ── MAIN CONTENT ──────────────────────────── -->
+    <div class="main-content">
+
+        <div class="page-header">
+            <h2>Quản lý Đơn hàng</h2>
+            <p>Theo dõi và xử lý đơn hàng từ khách hàng.</p>
+        </div>
+
+        <!-- Alerts -->
+        <div class="alert alert-success alert-dismissible fade show" role="alert" th:if="${success}">
+            <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
+            <button class="btn-close" data-bs-dismiss="alert" type="button"></button>
+        </div>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" th:if="${error}">
+            <i class="fas fa-exclamation-circle"></i> <span th:text="${error}"></span>
+            <button class="btn-close" data-bs-dismiss="alert" type="button"></button>
+        </div>
+
+        <!-- Search & Filter -->
+        <div class="panel-card">
+            <div class="panel-card-body">
+                <form action="/admin/orders" class="row g-3" method="get">
+                    <div class="col-md-5">
+                        <input class="form-control" name="keyword"
+                               placeholder="Tìm theo mã đơn, tên khách hàng, SĐT..."
+                               th:value="${keyword}" type="text">
+                    </div>
+                    <div class="col-md-4">
+                        <select class="form-select" name="trangThai">
+                            <option value="">Tất cả trạng thái</option>
+                            <option th:each="tt : ${trangThaiList}"
+                                    th:selected="${trangThaiFilter == tt.tenTTDH}"
+                                    th:text="${tt.tenTTDH}"
+                                    th:value="${tt.tenTTDH}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn-search" type="submit">
+                            <i class="fas fa-search"></i> Tìm kiếm
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Orders Table -->
+        <div class="panel-card">
+            <div class="panel-card-header">
+                <span class="header-dot"></span>
+                <h5>Danh sách đơn hàng</h5>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>Mã ĐH</th>
+                        <th>Khách hàng</th>
+                        <th>Ngày đặt</th>
+                        <th>Tổng tiền</th>
+                        <th>Trạng thái</th>
+                        <th>Hành động</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${donHangPage == null or donHangPage.content.isEmpty()}">
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <i class="fas fa-inbox" style="font-size:28px;opacity:0.3;display:block;margin-bottom:10px;"></i>
+                                Chưa có đơn hàng nào
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:each="order : ${donHangPage != null ? donHangPage.content : #lists.emptyList()}">
+                        <td>
+                            <span class="order-id">#<span th:text="${order.maDH}">1</span></span>
+                        </td>
+                        <td>
+                            <div class="customer-name" th:text="${order.khachHang.hoTen}">Nguyễn Văn A</div>
+                            <div class="customer-phone" th:text="${order.khachHang.soDienThoai}">0909000000</div>
+                        </td>
+                        <td th:text="${#temporals.format(order.ngayDat, 'dd/MM/yyyy HH:mm')}">22/10/2025</td>
+                        <td>
+                            <span class="price-text"
+                                  th:text="${#numbers.formatDecimal(order.tongTien, 0, 'COMMA', 0, 'POINT')} + 'đ'">
+                                100,000đ
+                            </span>
+                        </td>
+                        <td>
+                            <span class="status-badge"
+                                  th:classappend="${order.trangThaiDonHang.tenTTDH == 'Chờ xác nhận'  ? 'badge-wait'    :
+                                                   order.trangThaiDonHang.tenTTDH == 'Đã xác nhận'   ? 'badge-confirm' :
+                                                   order.trangThaiDonHang.tenTTDH == 'Đang giao'      ? 'badge-ship'    :
+                                                   order.trangThaiDonHang.tenTTDH == 'Hoàn thành'     ? 'badge-done'    : 'badge-cancel'}"
+                                  th:text="${order.trangThaiDonHang.tenTTDH}">
+                                Chờ xác nhận
+                            </span>
+                        </td>
+                        <td>
+                            <a class="btn-view"
+                               th:href="@{/admin/orders/detail/{id}(id=${order.maDH})}">
+                                <i class="fas fa-eye"></i> Chi tiết
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="px-4 py-3" th:if="${donHangPage != null and donHangPage.totalPages > 1}">
+                <nav>
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" th:classappend="${donHangPage.first} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/admin/orders(page=${donHangPage.number - 1}, keyword=${keyword}, trangThai=${trangThaiFilter})}">
+                                ← Trước
+                            </a>
+                        </li>
+                        <li class="page-item"
+                            th:classappend="${i == donHangPage.number} ? 'active'"
+                            th:each="i : ${#numbers.sequence(0, donHangPage.totalPages - 1)}">
+                            <a class="page-link"
+                               th:href="@{/admin/orders(page=${i}, keyword=${keyword}, trangThai=${trangThaiFilter})}"
+                               th:text="${i + 1}">1</a>
+                        </li>
+                        <li class="page-item" th:classappend="${donHangPage.last} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/admin/orders(page=${donHangPage.number + 1}, keyword=${keyword}, trangThai=${trangThaiFilter})}">
+                                Sau →
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+    </div><!-- /main-content -->
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

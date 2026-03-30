@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragments/layout :: head('Giới Thiệu')}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/gioithieu.css?v=2}">
+</head>
+<body>
+
+<th:block th:replace="~{fragments/layout :: header}"></th:block>
+<th:block th:replace="~{fragments/layout :: breadcrumb(items=${breadcrumbItems})}"></th:block>
+
+<!-- ── Page Header ─────────────────────────────── -->
+<section class="page-header">
+    <div class="container">
+        <div class="header-content">
+            <span class="header-icon"></span>
+            <h1>Về Chúng Tôi</h1>
+            <p>Nghệ thuật làm bánh từ trái tim — Mang hương vị ngọt ngào đến mọi khoảnh khắc của bạn</p>
+        </div>
+    </div>
+</section>
+
+<!-- ── Story Section ───────────────────────────── -->
+<section class="story-section">
+    <div class="container">
+        <div class="story-layout">
+            <div class="story-image">
+                <img
+                    src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800&auto=format&fit=crop"
+                    alt="Tiệm bánh của chúng tôi">
+                <div class="image-badge">
+                    <span class="badge-year">Thành lập 2020</span>
+                </div>
+            </div>
+            <div class="story-content">
+                <h2 class="section-title">
+                    <span class="title-icon">📖</span>
+                    Câu Chuyện Của Chúng Tôi
+                </h2>
+                <p class="lead-text">Ra đời từ niềm đam mê với nghệ thuật làm bánh, chúng tôi mang đến những chiếc bánh thủ công chất lượng cao, nguyên liệu tươi sạch và hương vị khó quên.</p>
+                <p>Bắt đầu từ một xưởng bánh nhỏ với vài chiếc lò nướng, chúng tôi đã không ngừng học hỏi, sáng tạo và phát triển để trở thành một trong những thương hiệu bánh được yêu thích nhất.</p>
+                <p>Với hơn <strong>5 năm kinh nghiệm</strong>, chúng tôi tự hào đã phục vụ hơn <strong>50.000 khách hàng</strong> và mang đến hàng triệu khoảnh khắc ngọt ngào.</p>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── Mission / Vision / Values ──────────────── -->
+<section class="mission-vision-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">
+                <span class="title-icon">🌟</span>
+                Triết Lý Của Chúng Tôi
+            </h2>
+        </div>
+        <div class="mv-grid">
+            <div class="mv-card mission-card">
+                <div class="mv-icon"><i class="fas fa-bullseye"></i></div>
+                <h3>Sứ Mệnh</h3>
+                <p>Mang đến những chiếc bánh thủ công ngon lành, làm từ nguyên liệu tươi sạch, được chế biến tỉ mỉ bởi những người thợ bánh tâm huyết — để mỗi miếng bánh là một trải nghiệm đáng nhớ.</p>
+            </div>
+            <div class="mv-card vision-card">
+                <div class="mv-icon"><i class="fas fa-eye"></i></div>
+                <h3>Tầm Nhìn</h3>
+                <p>Trở thành thương hiệu bánh thủ công hàng đầu, nơi mà chất lượng nguyên liệu, sự sáng tạo trong thiết kế và tình yêu với nghề làm bánh hội tụ trong từng sản phẩm.</p>
+            </div>
+            <div class="mv-card values-card">
+                <div class="mv-icon"><i class="fas fa-heart"></i></div>
+                <h3>Giá Trị Cốt Lõi</h3>
+                <p>Tươi ngon — Tận tâm — Sáng tạo. Chúng tôi cam kết sử dụng nguyên liệu chất lượng cao nhất, không chất bảo quản, và luôn đổi mới công thức để mang đến hương vị hoàn hảo.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── Why Choose Section ──────────────────────── -->
+<section class="why-choose-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">
+                <span class="title-icon"></span>
+                Tại Sao Chọn Chúng Tôi?
+            </h2>
+            <p class="section-subtitle">6 lý do khiến khách hàng tin tưởng và quay lại mỗi ngày</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-seedling"></i></div>
+                <h3>Nguyên Liệu Tươi Sạch</h3>
+                <p>100% nguyên liệu tươi, không chất bảo quản, nguồn gốc rõ ràng, an toàn cho sức khỏe</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-truck-fast"></i></div>
+                <h3>Giao Hàng Nhanh</h3>
+                <p>Giao hàng toàn thành phố, đảm bảo bánh đến tay bạn còn tươi ngon và nguyên vẹn</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-pencil-ruler"></i></div>
+                <h3>Thiết Kế Theo Yêu Cầu</h3>
+                <p>Tư vấn và thiết kế bánh theo chủ đề, màu sắc, thông điệp riêng của từng khách hàng</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-birthday-cake"></i></div>
+                <h3>Đa Dạng Mẫu Mã</h3>
+                <p>Hơn 500 mẫu bánh phong phú — sinh nhật, cưới hỏi, kỷ niệm và các dịp đặc biệt</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-headset"></i></div>
+                <h3>Hỗ Trợ Tận Tình</h3>
+                <p>Đội ngũ tư vấn nhiệt tình, sẵn sàng hỗ trợ bạn từ lúc đặt hàng đến khi nhận bánh</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-undo-alt"></i></div>
+                <h3>Cam Kết Chất Lượng</h3>
+                <p>Đổi/trả trong 24 giờ nếu sản phẩm không đúng yêu cầu. Hoàn tiền 100% nếu không hài lòng</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+<!-- ── Testimonials Section ────────────────────── -->
+<section class="testimonials-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">
+                <span class="title-icon"></span>
+                Khách Hàng Nói Gì Về Chúng Tôi
+            </h2>
+            <p class="section-subtitle">Những cảm nhận chân thực từ khách hàng thân thiết</p>
+        </div>
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <div class="testimonial-rating">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                </div>
+                <p class="testimonial-text">"Bánh kem sinh nhật đặt ở đây đẹp và ngon hơn mong đợi. Kem tươi, không ngọt gắt, trang trí tinh tế. Mọi người trong bữa tiệc đều khen!"</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">
+                        <img src="https://ui-avatars.com/api/?name=Nguyen+Thi+Lan&background=A0522D&color=fff" alt="Avatar">
+                    </div>
+                    <div class="author-info">
+                        <h4>Nguyễn Thị Lan</h4>
+                        <p>Khách hàng thân thiết</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testimonial-card">
+                <div class="testimonial-rating">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                </div>
+                <p class="testimonial-text">"Đặt bánh cưới cho đám cưới của mình, nhân viên tư vấn rất nhiệt tình. Bánh được giao đúng giờ, thiết kế y hệt yêu cầu. Cực kỳ hài lòng!"</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">
+                        <img src="https://ui-avatars.com/api/?name=Tran+Van+Minh&background=C9974C&color=fff" alt="Avatar">
+                    </div>
+                    <div class="author-info">
+                        <h4>Trần Văn Minh</h4>
+                        <p>Khách hàng</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testimonial-card">
+                <div class="testimonial-rating">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                </div>
+                <p class="testimonial-text">"Mua bánh ngàn lớp về làm quà, vỏ bánh giòn tan, nhân kem mịn màng. Hộp đựng cũng rất sang trọng. Sẽ tiếp tục ủng hộ lâu dài!"</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">
+                        <img src="https://ui-avatars.com/api/?name=Le+Thi+Hoa&background=7B3F1F&color=fff" alt="Avatar">
+                    </div>
+                    <div class="author-info">
+                        <h4>Lê Thị Hoa</h4>
+                        <p>Khách hàng</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<th:block th:replace="~{fragments/layout :: footer}"></th:block>
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const counters = document.querySelectorAll('.stat-number');
+        const speed = 200;
+
+        const animateCounter = (counter) => {
+            const target = +counter.getAttribute('data-target');
+            const count = +counter.innerText.replace(/,/g, '');
+            const increment = target / speed;
+            if (count < target) {
+                counter.innerText = Math.ceil(count + increment);
+                setTimeout(() => animateCounter(counter), 10);
+            } else {
+                counter.innerText = target.toLocaleString();
+            }
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounter(entry.target);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        counters.forEach(counter => observer.observe(counter));
+    });
+</script>
+</body>
+</html>

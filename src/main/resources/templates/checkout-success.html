@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragments/layout :: head('Đặt hàng thành công')}"></th:block>
+    <style>
+        :root {
+            --mag-pink: #F4C2C2;
+            --mag-pink-light: #FAD4D4;
+            --mag-pink-dark: #E8A5A5;
+            --mag-mint: #A8D5C2;
+            --mag-mint-light: #D4ECE4;
+            --mag-cream: #FDF6E3;
+            --mag-cream-dark: #F5ECD8;
+            --mag-chocolate: #3D2B1F;
+            --mag-chocolate-mid: #5D4037;
+            --mag-chocolate-light: #8D6E63;
+        }
+
+        body {
+            background-color: #f7f7f7; /* Nền xám siêu nhạt để tôn giấy trắng */
+            font-family: 'Arial', sans-serif;
+            color: var(--mag-chocolate);
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+        }
+
+        /* Container chính - Giống khổ giấy A4 */
+        .invoice-container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: #fff;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        /* Header Section */
+        .header-section {
+            padding: 50px 50px 30px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        .status-icon {
+            width: 60px;
+            height: 60px;
+            background-color: var(--mag-mint-light);
+            color: var(--mag-mint);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 24px;
+        }
+
+        .header-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--mag-chocolate);
+            margin: 0 0 8px;
+        }
+
+        .header-subtitle {
+            font-size: 14px;
+            color: var(--mag-chocolate-light);
+            margin: 0;
+        }
+
+        .order-id-badge {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 8px 20px;
+            background-color: var(--mag-cream);
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--mag-chocolate-mid);
+            letter-spacing: 0.5px;
+        }
+
+        /* Content Body */
+        .content-body {
+            padding: 40px 50px;
+        }
+
+        /* Info Grid System */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .info-box {
+            padding: 20px;
+            background-color: #FAFAFA;
+            border-radius: 8px;
+            border: 1px solid #F0F0F0;
+        }
+
+        .info-box-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: var(--mag-chocolate-light);
+            letter-spacing: 0.8px;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .info-box-content {
+            font-size: 14px;
+            color: var(--mag-chocolate);
+        }
+
+        .info-box-content p {
+            margin: 0 0 6px;
+        }
+
+        .info-box-content strong {
+            color: var(--mag-chocolate-mid);
+        }
+
+        /* Table Style */
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        .items-table th {
+            text-align: left;
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--mag-chocolate-light);
+            padding: 12px 15px;
+            border-bottom: 2px solid var(--mag-cream-dark);
+            letter-spacing: 0.5px;
+        }
+
+        .items-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+            vertical-align: top;
+        }
+
+        .item-name {
+            font-weight: 600;
+            color: var(--mag-chocolate);
+        }
+
+        .item-meta {
+            font-size: 12px;
+            color: var(--mag-chocolate-light);
+            margin-top: 4px;
+        }
+
+        /* Totals Section */
+        .totals-section {
+            border-top: 2px solid var(--mag-cream-dark);
+            padding-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .totals-table {
+            width: 300px;
+        }
+
+        .totals-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 14px;
+        }
+
+        .totals-row.grand-total {
+            border-top: 1px solid #eee;
+            margin-top: 10px;
+            padding-top: 15px;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--mag-chocolate);
+        }
+
+        .totals-label {
+            color: var(--mag-chocolate-light);
+        }
+
+        /* Footer Actions */
+        .footer-actions {
+            background-color: #FAFAFA;
+            padding: 30px 50px;
+            border-top: 1px solid #eee;
+            text-align: center;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            margin: 0 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--mag-chocolate);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--mag-chocolate-mid);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--mag-chocolate-mid);
+            border: 1px solid #ddd;
+        }
+
+        .btn-outline:hover {
+            border-color: var(--mag-chocolate);
+            color: var(--mag-chocolate);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            background-color: var(--mag-mint-light);
+            color: #2E7D32;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .invoice-container {
+                margin: 0;
+                border-radius: 0;
+            }
+            .content-body, .header-section, .footer-actions {
+                padding-left: 25px;
+                padding-right: 25px;
+            }
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            .action-buttons {
+                flex-direction: column;
+            }
+            .btn {
+                width: 100%;
+                margin: 5px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<th:block th:replace="~{fragments/layout :: header}"></th:block>
+
+<div class="invoice-container">
+    <!-- Header -->
+    <div class="header-section">
+        <div class="status-icon">
+            <i class="fas fa-check"></i>
+        </div>
+        <h1 class="header-title">Đặt hàng thành công</h1>
+        <p class="header-subtitle">Cảm ơn bạn đã đặt hàng. Đơn hàng của bạn đang được xử lý.</p>
+        <div class="order-id-badge">
+            MÃ ĐƠN HÀNG: #<span th:text="${donHang.maDH}">12345</span>
+        </div>
+    </div>
+
+    <!-- Content Body -->
+    <div class="content-body">
+        
+        <!-- Info Grid -->
+        <div class="info-grid">
+            <!-- Thông tin khách hàng -->
+            <div class="info-box">
+                <div class="info-box-title">Thông tin người nhận</div>
+                <div class="info-box-content">
+                    <p><strong th:text="${donHang.khachHang.hoTen}">Nguyễn Văn A</strong></p>
+                    <p th:text="${donHang.khachHang.soDienThoai}">0909000000</p>
+                    <p th:text="${donHang.diaChiGiaoHang.diaChiChiTiet}" style="color: var(--mag-chocolate-light);">
+                        123 Đường ABC, Quận 1, TP.HCM
+                    </p>
+                </div>
+            </div>
+
+            <!-- Thông tin đơn hàng -->
+            <div class="info-box">
+                <div class="info-box-title">Chi tiết đơn hàng</div>
+                <div class="info-box-content">
+                    <p>
+                        <span style="color: var(--mag-chocolate-light);">Ngày đặt:</span><br>
+                        <strong th:text="${#temporals.format(donHang.ngayDat, 'dd/MM/yyyy HH:mm')}">22/10/2024 14:30</strong>
+                    </p>
+                    <p style="margin-top: 10px;">
+                        <span style="color: var(--mag-chocolate-light);">Trạng thái:</span><br>
+                        <span class="status-badge" th:text="${donHang.trangThaiDonHang.tenTTDH}">Chờ xác nhận</span>
+                    </p>
+                    <p style="margin-top: 10px;">
+                        <span style="color: var(--mag-chocolate-light);">Thanh toán:</span><br>
+                        <strong th:text="${donHang.phuongThucThanhToan.tenPTTT}">Thanh toán khi nhận hàng</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Items Table -->
+        <table class="items-table">
+            <thead>
+                <tr>
+                    <th style="width: 50%;">Sản phẩm</th>
+                    <th style="width: 25%; text-align: center;">Số lượng</th>
+                    <th style="width: 25%; text-align: right;">Thành tiền</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="item : ${chiTiet}">
+                    <td>
+                        <div class="item-name" th:text="${item.sanPham.tenSP}">Tên sản phẩm</div>
+                        <div class="item-meta" th:text="${#numbers.formatDecimal(item.donGia, 0, 'COMMA', 0, 'POINT')} + ' đ'">30,000 đ</div>
+                    </td>
+                    <td style="text-align: center; vertical-align: middle;" th:text="${item.soLuong}">1</td>
+                    <td style="text-align: right; vertical-align: middle; font-weight: 600;" th:text="${#numbers.formatDecimal(item.donGia * item.soLuong, 0, 'COMMA', 0, 'POINT')} + ' đ'">30,000 đ</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Totals -->
+        <div class="totals-section">
+            <div class="totals-table">
+                <div class="totals-row">
+                    <span class="totals-label">Tạm tính</span>
+                    <span th:text="${#numbers.formatDecimal(donHang.tongTien - 30000, 0, 'COMMA', 0, 'POINT')} + ' đ'">30,000 đ</span>
+                </div>
+                <div class="totals-row">
+                    <span class="totals-label">Phí vận chuyển</span>
+                    <span>30,000 đ</span>
+                </div>
+                <div class="totals-row grand-total">
+                    <span>Tổng cộng</span>
+                    <span th:text="${#numbers.formatDecimal(donHang.tongTien, 0, 'COMMA', 0, 'POINT')} + ' đ'">60,000 đ</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer Actions -->
+    <div class="footer-actions">
+        <a class="btn btn-primary" th:href="@{/profile}">
+            <i class="fas fa-box" style="margin-right: 8px;"></i> Xem đơn hàng của tôi
+        </a>
+        <a class="btn btn-outline" th:href="@{/sanpham}">
+            Tiếp tục mua sắm
+        </a>
+    </div>
+</div>
+
+<!-- Footer -->
+<th:block th:replace="~{fragments/layout :: footer}"></th:block>
+
+<!-- Scripts -->
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+</html>

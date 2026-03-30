@@ -1,0 +1,603 @@
+/* ============================================
+   TẾT MARKET - REGISTER PAGE (register1.css)
+   Layout: Form Left | Bakery Image Right
+   Colors: Magnolia Pastel Palette
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --mag-pink: #F4C2C2;
+    --mag-pink-light: #FAD4D4;
+    --mag-pink-dark: #E8A5A5;
+    --mag-mint: #A8D5C2;
+    --mag-mint-light: #D4ECE4;
+    --mag-cream: #FDF6E3;
+    --mag-cream-dark: #F5ECD8;
+    --mag-chocolate: #3D2B1F;
+    --mag-chocolate-mid: #5D4037;
+    --mag-chocolate-light: #8D6E63;
+    --mag-text: #4A4A4A;
+    --mag-text-light: #9A8E88;
+    --white: #FFFFFF;
+    --error: #EF9A9A;
+    --error-bg: #FFEBEE;
+
+    --shadow-soft: 0 4px 24px rgba(93, 64, 55, 0.08);
+    --shadow-medium: 0 8px 40px rgba(93, 64, 55, 0.13);
+    --transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Be Vietnam Pro', sans-serif;
+    background: var(--mag-cream);
+    min-height: 100vh;
+    color: var(--mag-text);
+    overflow-x: hidden;
+}
+
+/* ============================================
+   FLOATING ELEMENTS (keep from original)
+   ============================================ */
+.floating-elements {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.floating-element {
+    position: absolute;
+    font-size: 2.2rem;
+    opacity: 0.08;
+    animation: floatDrift 22s infinite ease-in-out;
+}
+
+.floating-element:nth-child(1) { top: 8%;  left: 5%;  animation-delay: 0s; }
+.floating-element:nth-child(2) { top: 15%; right: 5%; animation-delay: 4s; font-size: 2.8rem; }
+.floating-element:nth-child(3) { bottom: 15%; left: 6%; animation-delay: 8s; }
+.floating-element:nth-child(4) { bottom: 25%; right: 8%; animation-delay: 12s; font-size: 1.8rem; }
+
+@keyframes floatDrift {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    33%       { transform: translateY(-22px) rotate(4deg); }
+    66%       { transform: translateY(-10px) rotate(-3deg); }
+}
+
+/* ============================================
+   BACK HOME BUTTON
+   ============================================ */
+.back-home {
+    position: fixed;
+    top: 1.5rem;
+    left: 1.5rem;
+    z-index: 200;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.6rem 1.2rem;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(12px);
+    border-radius: 50px;
+    text-decoration: none;
+    color: var(--mag-chocolate-mid);
+    font-weight: 600;
+    font-size: 0.88rem;
+    box-shadow: var(--shadow-soft);
+    border: 1.5px solid transparent;
+    transition: var(--transition);
+    letter-spacing: 0.01em;
+}
+
+.back-home:hover {
+    border-color: var(--mag-pink);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
+    color: var(--mag-chocolate);
+    text-decoration: none;
+}
+
+.back-home i {
+    color: var(--mag-pink-dark);
+    font-size: 1rem;
+}
+
+/* ============================================
+   PAGE WRAPPER & OUTER SHELL
+   ============================================ */
+.register-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5rem 2rem 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+.register-container {
+    width: 100%;
+    max-width: 1080px;
+    background: var(--white);
+    border-radius: 32px;
+    box-shadow: var(--shadow-medium);
+    overflow: hidden;
+}
+
+/* ============================================
+   TWO-COLUMN ROW LAYOUT
+   Left: Form  |  Right: Bakery Image
+   ============================================ */
+.register-container .row {
+    display: flex;
+    flex-wrap: wrap;
+    min-height: 680px;
+}
+
+/* LEFT COLUMN: form panel */
+.register-container .col-md-6.col-lg-7 {
+    flex: 0 0 58%;
+    max-width: 58%;
+}
+
+/* RIGHT COLUMN: image panel */
+.register-container .col-md-6.col-lg-5 {
+    flex: 0 0 42%;
+    max-width: 42%;
+}
+
+/* ============================================
+   FORM PANEL (Left)
+   ============================================ */
+.form-panel {
+    padding: 3.5rem 4rem 3.5rem 4rem;
+    background: var(--white);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+}
+
+/* ---- Header ---- */
+.form-header {
+    margin-bottom: 2.2rem;
+}
+
+.form-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--mag-chocolate);
+    margin-bottom: 0.4rem;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+}
+
+.form-subtitle {
+    color: var(--mag-text-light);
+    font-size: 0.92rem;
+    line-height: 1.55;
+    font-weight: 400;
+}
+
+/* ---- Alert ---- */
+.alert {
+    border: none;
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    font-size: 0.92rem;
+    animation: slideInAlert 0.35s ease-out;
+}
+
+@keyframes slideInAlert {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.alert-danger {
+    background: var(--error-bg);
+    color: #b71c1c;
+    border-left: 4px solid var(--error);
+}
+
+/* ============================================
+   FLOATING LABEL INPUTS — Magnolia underline
+   ============================================ */
+.form-floating-enhanced {
+    position: relative;
+    margin-bottom: 1.6rem;
+}
+
+/* Icon left */
+.form-floating-enhanced .input-icon {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--mag-text-light);
+    font-size: 0.95rem;
+    transition: var(--transition);
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* Input base — underline only like the reference image */
+.form-floating-enhanced .form-control {
+    width: 100%;
+    height: 52px;
+    padding: 1.1rem 2.2rem 0.3rem 0; 
+    border: none;
+    border-bottom: 1.5px solid #D5CBC4;
+    border-radius: 0;
+    font-size: 0.95rem;
+    font-family: 'Be Vietnam Pro', sans-serif;
+    color: var(--mag-text);
+    background: transparent;
+    outline: none;
+    transition: var(--transition);
+    
+    /* --- PHẦN SỬA --- */
+    letter-spacing: 0.01em; /* Giãn chữ nhẹ cho dễ đọc */
+    /* text-transform: uppercase;  <--- XÓA DÒNG NÀY ĐI */
+    /* ---------------- */
+}
+
+.form-floating-enhanced .form-control::placeholder {
+    color: transparent;
+}
+
+/* Floating label */
+.form-floating-enhanced .form-label {
+    position: absolute;
+    left: 1.6rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--mag-chocolate-mid);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    pointer-events: none;
+    transition: var(--transition);
+    background: transparent;
+}
+
+/* Focused / filled: label stays small at top */
+.form-floating-enhanced .form-control:focus,
+.form-floating-enhanced .form-control:not(:placeholder-shown) {
+    border-bottom-color: var(--mag-chocolate);
+}
+
+.form-floating-enhanced .form-control:focus + .form-label,
+.form-floating-enhanced .form-control:not(:placeholder-shown) + .form-label {
+    top: 8px;
+    transform: none;
+    font-size: 0.68rem;
+    color: var(--mag-chocolate-mid);
+}
+
+/* Underline accent on focus */
+.form-floating-enhanced::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--mag-pink-dark);
+    transition: width 0.3s ease;
+}
+
+.form-floating-enhanced:focus-within::after {
+    width: 100%;
+}
+
+/* Remove left icon spacing adjustment */
+.form-floating-enhanced .input-icon {
+    display: none; /* hide icons to match clean reference layout */
+}
+
+.form-floating-enhanced .form-control {
+    padding-left: 0;
+}
+
+.form-floating-enhanced .form-label {
+    left: 0;
+}
+
+/* Password toggle */
+.password-toggle {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--mag-text-light);
+    cursor: pointer;
+    font-size: 0.95rem;
+    padding: 0.4rem;
+    transition: var(--transition);
+    z-index: 2;
+}
+
+.password-toggle:hover { color: var(--mag-chocolate); }
+
+/* Password strength */
+.password-strength {
+    height: 3px;
+    background: var(--mag-cream-dark);
+    border-radius: 2px;
+    margin-top: 6px;
+    overflow: hidden;
+}
+
+.password-strength-bar {
+    height: 100%;
+    width: 0;
+    border-radius: 2px;
+    transition: var(--transition);
+}
+
+.password-strength-bar.password-strength-weak   { width: 25%; background: #ef9a9a; }
+.password-strength-bar.password-strength-fair   { width: 50%; background: #ffcc80; }
+.password-strength-bar.password-strength-good   { width: 75%; background: var(--mag-mint); }
+.password-strength-bar.password-strength-strong { width: 100%; background: #81c784; }
+
+.password-strength-text {
+    font-size: 0.72rem;
+    margin-top: 4px;
+    color: var(--mag-text-light);
+    letter-spacing: 0.03em;
+}
+
+/* Two-column row for name fields (mimics First / Last name layout) */
+.form-row-half {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+/* ============================================
+   NEWSLETTER CHECKBOX (like reference)
+   ============================================ */
+.newsletter-check {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin-bottom: 1.8rem;
+    margin-top: 0.4rem;
+}
+
+.newsletter-check input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid var(--mag-chocolate-light);
+    border-radius: 50%;
+    cursor: pointer;
+    accent-color: var(--mag-mint);
+    flex-shrink: 0;
+}
+
+.newsletter-check label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--mag-text);
+    cursor: pointer;
+    user-select: none;
+}
+
+/* ============================================
+   REGISTER BUTTON — outlined chamfered style
+   ============================================ */
+.btn-register {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 1rem 3rem;
+    background: transparent;
+    border: 2px solid var(--mag-chocolate);
+    border-radius: 6px;
+    color: var(--mag-chocolate);
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: var(--transition);
+    float: right;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-register::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--mag-chocolate);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+    z-index: 0;
+}
+
+.btn-register:hover::before { transform: scaleX(1); }
+
+.btn-register:hover {
+    color: var(--white);
+}
+
+.btn-register span,
+.btn-register i {
+    position: relative;
+    z-index: 1;
+}
+
+.btn-register i { display: none; }
+
+/* Loading state */
+.btn-register.loading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+/* ============================================
+   DIVIDER
+   ============================================ */
+.divider {
+    display: flex;
+    align-items: center;
+    margin: 1.6rem 0;
+    color: var(--mag-text-light);
+    font-size: 0.82rem;
+    clear: both;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--mag-cream-dark);
+}
+
+.divider span { padding: 0 1rem; }
+
+/* ============================================
+   LOGIN SECTION
+   ============================================ */
+.login-section {
+    text-align: center;
+}
+
+.login-text {
+    color: var(--mag-text-light);
+    font-size: 0.88rem;
+    margin-bottom: 0;
+    display: inline;
+}
+
+.login-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--mag-chocolate-mid);
+    text-decoration: underline;
+    font-weight: 600;
+    font-size: 0.88rem;
+    transition: var(--transition);
+    margin-left: 0.3rem;
+}
+
+.login-link:hover {
+    color: var(--mag-pink-dark);
+    text-decoration: none;
+}
+
+.login-link i { font-size: 0.85rem; }
+
+/* ============================================
+   BRAND PANEL → repurposed as BAKERY IMAGE PANEL (Right)
+   ============================================ */
+.brand-panel {
+    position: relative;
+    height: 100%;
+    min-height: 680px;
+    overflow: hidden;
+    background: var(--mag-cream-dark);
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+}
+
+/* Full-bleed bakery image */
+.brand-panel::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url('img/image1.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* Overlay to unify with palette */
+.brand-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        160deg,
+        rgba(253,246,227,0.18) 0%,
+        rgba(244,194,194,0.10) 60%,
+        rgba(168,213,194,0.12) 100%
+    );
+    z-index: 1;
+}
+
+/* Hide original brand content */
+.brand-logo,
+.benefits-grid {
+    display: none;
+}
+
+/* Bakery image via CSS background on a child div */
+.bakery-img-fill {
+    position: absolute;
+    inset: 0;
+    background-image: var(--bakery-img, none);
+    background-size: cover;
+    background-position: center;
+    z-index: 0;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 900px) {
+    .register-container .col-md-6.col-lg-7,
+    .register-container .col-md-6.col-lg-5 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .brand-panel {
+        min-height: 280px;
+        order: -1;
+    }
+
+    .form-panel {
+        padding: 2.5rem 2rem;
+    }
+
+    .form-row-half {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .btn-register {
+        float: none;
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .register-wrapper { padding: 4rem 1rem 1rem; }
+    .form-panel { padding: 2rem 1.5rem; }
+    .form-title { font-size: 1.8rem; }
+}
